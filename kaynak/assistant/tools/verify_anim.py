@@ -379,12 +379,17 @@ def main():
     pos8 = [ln.split("|") for ln in lines if ln.startswith("POS8|")]
     check(pos8 and float(pos8[0][1]) == 20 and float(pos8[0][2]) == 80 and pos8[0][3:5] == ["0", "0"],
           "UIListLayout'lu kapta pivot/konum DEĞİŞMEDİ")
-    # hover_glow: from 0.15 → to 0. Sahte buton hover öncesi ImageTransparency=0.15 ile başlar.
-    #   giriş (MouseEnter) → to = 0 · çıkış (MouseLeave) → hover öncesi = 0.15 (from değeri DEĞİL, gerçek başlangıç)
-    btn_it = [t.split("|") for t in tweens if t.startswith("TWEEN|Buton_button|") and "|ImageTransparency|" in t]
-    check(len(btn_it) >= 2 and btn_it[0][4] == "0" and btn_it[1][4] == "0.15",
-          "hover_glow: giriş 0'a, çıkış hover öncesi 0.15'e döner (görülen hedefler: %s)"
+    # hover_glow: from 0.15 → to 0 (kütüphane p = ImageTransparency).
+    #   v33 resolveProp: TextButton'da ImageTransparency yoktur → BackgroundTransparency'a çevrilir
+    #   (eskiden sessizce düşerdi). Hover (MouseEnter) → to = 0 · çıkış (MouseLeave) → BASE = 0
+    #   (from değeri 0.15 DEĞİL: çıkış her zaman hover öncesi gerçek değere döner).
+    btn_it = [t.split("|") for t in tweens if t.startswith("TWEEN|Buton_button|") and "|BackgroundTransparency|" in t]
+    check(len(btn_it) >= 2 and btn_it[0][4] == "0" and btn_it[1][4] == "0",
+          "hover_glow (TextButton): ImageTransparency → BackgroundTransparency, çıkış BASE'e döner (hedefler: %s)"
           % [b[4] for b in btn_it[:2]])
+    # Görsel doğrulama: ImageLabel'da gerçek ImageTransparency tween'i üretilir (sınıf uyarlaması yok)
+    icon_it = [t.split("|") for t in tweens if t.startswith("TWEEN|Ikon_ImageLabel|") and "|ImageTransparency|" in t]
+    check(len(icon_it) >= 1, "ImageLabel'da ImageTransparency tween'i üretildi (uyarlama gerekmez)")
     scale_btn = [t.split("|") for t in tweens if t.startswith("TWEEN|UIScale|") and "Scale|" in t]
     check(len(scale_btn) >= 3, "UIScale tween'leri üretildi (%d)" % len(scale_btn))
 

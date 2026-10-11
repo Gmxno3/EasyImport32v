@@ -24,6 +24,15 @@ LABELS = os.path.join(ROOT, "datasets", "labels", "effect-icons-human.jsonl")  #
 NONE = "none"   # efekt için uygun değil: modelin açıkça öğrendiği bir sınıf; destek eşiğinden muaf
 OUT = os.path.join(ROOT, "runtime", "js", "ei-fxmodel.js")
 MIN_SUPPORT = 10
+
+
+def lib_root():
+    """Kütüphane kökü: kaynak ağacının içinde ya da repo kökünde olabilir (kaynak/../kutuphane)."""
+    for cand in (os.path.join(ROOT, "..", "..", "kutuphane"), os.path.join(ROOT, "..", "kutuphane"),
+                 os.path.join(ROOT, "kutuphane")):
+        if os.path.exists(os.path.join(cand, "ekstra-kutuphane.json")):
+            return os.path.abspath(cand)
+    raise SystemExit("ekstra-kutuphane.json bulunamadı (kaynak/../kutuphane bekleniyor)")
 ALPHA = 1.0
 FOLDS = 5
 
@@ -41,7 +50,7 @@ def load():
     for ln in open(LABELS, encoding="utf-8"):
         if ln.strip():
             rows.append(json.loads(ln))
-    items = json.load(open(os.path.join(ROOT, "..", "kutuphane", "ekstra-kutuphane.json"), encoding="utf-8"))["items"]
+    items = json.load(open(os.path.join(lib_root(), "ekstra-kutuphane.json"), encoding="utf-8"))["items"]
     byid = {i["id"]: i for i in items}
     data = []
     for r in rows:

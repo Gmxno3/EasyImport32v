@@ -4,7 +4,8 @@
     "version": 1,
     "createdAt": "2026-10-05",
     "note": "EasyImport Asistan animasyon kutuphanesi. Asistan = SINIF ATAMASI + ANIMASYON ATAMASI yapar; efekt render etmez.",
-    "luaTarget": "TweenService (LocalScript), TweenInfo.new(dur, Enum.EasingStyle.<e>, Enum.EasingDirection.<ed>, rep, rev, dl)"
+    "luaTarget": "TweenService (LocalScript), TweenInfo.new(dur, Enum.EasingStyle.<e>, Enum.EasingDirection.<ed>, rep, rev, dl)",
+    "poolNote": "pool=\"extra\": genel sıralama havuzuna girmez (panel_* yalnız gerçek panellere otomatik atanır; gecis/metin/fx katlanan kategoriler)."
   },
   "_timing": {
     "instant": 0.08,
@@ -1750,7 +1751,8 @@
           "e": "Quart",
           "ed": "In",
           "rep": 0,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": ""
@@ -4262,7 +4264,8 @@
           "e": "Quart",
           "ed": "Out",
           "rep": 0,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": ""
@@ -4312,7 +4315,8 @@
           "e": "Quart",
           "ed": "Out",
           "rep": 0,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": ""
@@ -4461,7 +4465,8 @@
           "e": "Quart",
           "ed": "Out",
           "rep": 0,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": ""
@@ -4567,7 +4572,8 @@
           "e": "Quart",
           "ed": "Out",
           "rep": 0,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": ""
@@ -4883,7 +4889,8 @@
           "e": "Quart",
           "ed": "Out",
           "rep": 0,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": "EXP / can barı. 'to' değeri runtime'da hedef orana göre ayarlanır."
@@ -5298,7 +5305,8 @@
           "e": "Circular",
           "ed": "InOut",
           "rep": -1,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         },
         {
           "t": "self",
@@ -5527,7 +5535,8 @@
           "e": "Linear",
           "ed": "InOut",
           "rep": -1,
-          "rev": true
+          "rev": true,
+          "u": "scale"
         }
       ],
       "notes": "Film grain efekti. ScaleType=Tile gerekir."
@@ -5580,7 +5589,8 @@
           "e": "Linear",
           "ed": "InOut",
           "rep": -1,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         },
         {
           "t": "self",
@@ -5703,7 +5713,8 @@
           "e": "Quad",
           "ed": "InOut",
           "rep": -1,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": ""
@@ -5755,7 +5766,8 @@
           "e": "Circular",
           "ed": "InOut",
           "rep": -1,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         }
       ],
       "notes": "Buton / kart üzerinde cam parlama geçişi."
@@ -5806,7 +5818,8 @@
           "e": "Sine",
           "ed": "InOut",
           "rep": -1,
-          "rev": false
+          "rev": false,
+          "u": "scale"
         },
         {
           "t": "UIScale",
@@ -5940,7 +5953,8 @@
           "e": "Sine",
           "ed": "InOut",
           "rep": -1,
-          "rev": true
+          "rev": true,
+          "u": "scale"
         },
         {
           "t": "UIScale",
@@ -5991,7 +6005,7 @@
           "t": "self",
           "p": "MaxVisibleGraphemes",
           "from": 0,
-          "to": "textLen",
+          "to": "len",
           "d": 1.2,
           "dl": 0,
           "e": "Linear",
@@ -6763,6 +6777,753 @@
         }
       ],
       "notes": "Kart üzerine gelince 5° döner, çıkınca eski açısına döner (Framewisp _turn). Açı ve hız kadranı henüz yok."
+    },
+    {
+      "id": "panel_slide_left_soft",
+      "name": "Panel: Soldan Yumuşak Açılış",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ScrollingFrame",
+        "ImageLabel"
+      ],
+      "roles": [
+        "panel",
+        "modal"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0.02,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 3,
+        "beauty": 5,
+        "snap": 4
+      },
+      "dur": 0.55,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Position",
+          "from": [
+            -1,
+            0
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "u": "scale",
+          "d": 0.55,
+          "dl": 0,
+          "e": "Quint",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0.3,
+          "to": 0,
+          "d": 0.4,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Butona basınca panel ekranın SOLUNDAN kayarak, yavaşça görünerek açılır (yumuşak, 0.55 sn)."
+    },
+    {
+      "id": "panel_slide_right_soft",
+      "name": "Panel: Sağdan Yumuşak Açılış",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ScrollingFrame",
+        "ImageLabel"
+      ],
+      "roles": [
+        "panel",
+        "modal"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0.02,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 3,
+        "beauty": 5,
+        "snap": 4
+      },
+      "dur": 0.55,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Position",
+          "from": [
+            1,
+            0
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "u": "scale",
+          "d": 0.55,
+          "dl": 0,
+          "e": "Quint",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0.3,
+          "to": 0,
+          "d": 0.4,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Panel sağdan sola doğru kayarak açılır (yumuşak, 0.55 sn)."
+    },
+    {
+      "id": "panel_slide_up_soft",
+      "name": "Panel: Aşağıdan Yumuşak Açılış",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ScrollingFrame"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "bottom-sheet"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0.02,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 3,
+        "beauty": 5,
+        "snap": 4
+      },
+      "dur": 0.5,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Position",
+          "from": [
+            0,
+            1
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "u": "scale",
+          "d": 0.5,
+          "dl": 0,
+          "e": "Quint",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0.3,
+          "to": 0,
+          "d": 0.38,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Aşağıdan yükselerek açılır (alt panel / bottom sheet)."
+    },
+    {
+      "id": "panel_slide_down_soft",
+      "name": "Panel: Yukarıdan Yumuşak Açılış",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ScrollingFrame"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "banner"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0.02,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 3,
+        "beauty": 5,
+        "snap": 4
+      },
+      "dur": 0.5,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Position",
+          "from": [
+            0,
+            -1
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "u": "scale",
+          "d": 0.5,
+          "dl": 0,
+          "e": "Quint",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0.3,
+          "to": 0,
+          "d": 0.38,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Yukarıdan inerek açılır (üst panel / bildirim)."
+    },
+    {
+      "id": "panel_fade_soft",
+      "name": "Panel: Yumuşak Beliriş (Yavaş)",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ImageLabel",
+        "ScrollingFrame",
+        "TextLabel"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "background"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0,
+          1
+        ]
+      },
+      "q": {
+        "detail": 1,
+        "variety": 2,
+        "beauty": 4,
+        "snap": 4
+      },
+      "dur": 0.6,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 1,
+          "to": 0,
+          "d": 0.6,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "UIScale",
+          "p": "Scale",
+          "from": 0.98,
+          "to": 1,
+          "d": 0.6,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Yavaş yavaş görünür olur; konum değişmez. Her sınıfta çalışır (Frame→arka plan, yazı→metin, resim→resim)."
+    },
+    {
+      "id": "panel_scale_unfold",
+      "name": "Panel: Ortadan Açılma",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ImageLabel"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "card"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0.01,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 3,
+        "beauty": 4,
+        "snap": 4
+      },
+      "dur": 0.5,
+      "tracks": [
+        {
+          "t": "UIScale",
+          "p": "Scale",
+          "from": 0.9,
+          "to": 1,
+          "d": 0.5,
+          "dl": 0,
+          "e": "Back",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0.6,
+          "to": 0,
+          "d": 0.4,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Panel ortadan büyüyerek açılır; hafif taşma (Back/Out) ile canlı durur."
+    },
+    {
+      "id": "panel_soft_zoom",
+      "name": "Panel: Yumuşak Yakınlaşma",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ImageLabel"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "card"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 2,
+        "beauty": 4,
+        "snap": 5
+      },
+      "dur": 0.6,
+      "tracks": [
+        {
+          "t": "UIScale",
+          "p": "Scale",
+          "from": 1.06,
+          "to": 1,
+          "d": 0.6,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 1,
+          "to": 0,
+          "d": 0.5,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Uzaktan yakınlaşarak, yavaşça görünür olur (yumuşak, sinüs eğrisi)."
+    },
+    {
+      "id": "panel_rise_slow",
+      "name": "Panel: Yavaş Yükseliş",
+      "cat": "giris",
+      "trig": "show",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ScrollingFrame"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "card",
+        "list"
+      ],
+      "fx": false,
+      "pool": "extra",
+      "fit": {
+        "area": [
+          0.02,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 3,
+        "beauty": 4,
+        "snap": 5
+      },
+      "dur": 0.65,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Position",
+          "from": [
+            0,
+            0.12
+          ],
+          "to": [
+            0,
+            0
+          ],
+          "u": "scale",
+          "d": 0.65,
+          "dl": 0,
+          "e": "Quart",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0.6,
+          "to": 0,
+          "d": 0.45,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "Out",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Hafif yukarı kayarak ve yavaşça belirerek açılır; en sakin panel açılışı."
+    },
+    {
+      "id": "exit_slide_left",
+      "name": "Sola Kayarak Çıkış",
+      "cat": "cikis",
+      "trig": "hide",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ScrollingFrame"
+      ],
+      "roles": [
+        "panel",
+        "modal"
+      ],
+      "fx": false,
+      "fit": {
+        "area": [
+          0.02,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 2,
+        "beauty": 4,
+        "snap": 4
+      },
+      "dur": 0.3,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Position",
+          "from": [
+            0,
+            0
+          ],
+          "to": [
+            -1,
+            0
+          ],
+          "u": "scale",
+          "d": 0.3,
+          "dl": 0,
+          "e": "Quad",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0,
+          "to": 0.35,
+          "d": 0.26,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Panel sola kayarak kapanır (girişten hızlı)."
+    },
+    {
+      "id": "exit_slide_right",
+      "name": "Sağa Kayarak Çıkış",
+      "cat": "cikis",
+      "trig": "hide",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ScrollingFrame"
+      ],
+      "roles": [
+        "panel",
+        "modal"
+      ],
+      "fx": false,
+      "fit": {
+        "area": [
+          0.02,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 2,
+        "beauty": 4,
+        "snap": 4
+      },
+      "dur": 0.3,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Position",
+          "from": [
+            0,
+            0
+          ],
+          "to": [
+            1,
+            0
+          ],
+          "u": "scale",
+          "d": 0.3,
+          "dl": 0,
+          "e": "Quad",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0,
+          "to": 0.35,
+          "d": 0.26,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Panel sağa kayarak kapanır."
+    },
+    {
+      "id": "exit_fade_soft",
+      "name": "Yumuşak Sönerek Çıkış",
+      "cat": "cikis",
+      "trig": "hide",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ImageLabel",
+        "TextLabel",
+        "TextButton",
+        "ScrollingFrame"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "label",
+        "background"
+      ],
+      "fx": false,
+      "fit": {
+        "area": [
+          0,
+          1
+        ]
+      },
+      "q": {
+        "detail": 1,
+        "variety": 2,
+        "beauty": 3,
+        "snap": 4
+      },
+      "dur": 0.4,
+      "tracks": [
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0,
+          "to": 1,
+          "d": 0.4,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "UIScale",
+          "p": "Scale",
+          "from": 1,
+          "to": 0.98,
+          "d": 0.4,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Kapanışta yumuşakça söner (0.4 sn); konum korunur."
+    },
+    {
+      "id": "exit_scale_fade",
+      "name": "Küçülüp Sönerek Çıkış",
+      "cat": "cikis",
+      "trig": "hide",
+      "cls": [
+        "Frame",
+        "CanvasGroup",
+        "ImageLabel",
+        "ImageButton"
+      ],
+      "roles": [
+        "panel",
+        "modal",
+        "card"
+      ],
+      "fx": false,
+      "fit": {
+        "area": [
+          0.01,
+          1
+        ]
+      },
+      "q": {
+        "detail": 2,
+        "variety": 2,
+        "beauty": 4,
+        "snap": 4
+      },
+      "dur": 0.32,
+      "tracks": [
+        {
+          "t": "UIScale",
+          "p": "Scale",
+          "from": 1,
+          "to": 0.94,
+          "d": 0.32,
+          "dl": 0,
+          "e": "Quart",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        },
+        {
+          "t": "self",
+          "p": "Transparency",
+          "from": 0,
+          "to": 1,
+          "d": 0.3,
+          "dl": 0,
+          "e": "Sine",
+          "ed": "In",
+          "rep": 0,
+          "rev": false
+        }
+      ],
+      "notes": "Panel biraz küçülüp sönerek kapanır."
     }
   ]
 }

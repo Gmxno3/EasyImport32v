@@ -24,7 +24,15 @@ Yapılmayanlar: animasyon seçici arayüzü, FX tespiti, `train_anim.py`, UIGrid
 - `tests/verify_figma_merge.js` — code.js birleştirmesi (v9 bayt eşitliği, ei ölçümü, E1)
 - `tests/verify_learn_channel.js` — öğrenme kanalı (clientStorage kayıt/okuma)
 - `tests/verify_studio_port.py` — Studio asistan köprüsü, gerçek fixture'larda
-- `assistant/tools/verify_anim.py`, `verify_learn.py`, `verify_merge.py` — asistan modülleri
+- `tests/verify_ekstra.js` — ekstra kütüphane (1022 simge) + öğrenen efekt simgesi sıralayıcı (kütüphane kökünü kendisi bulur)
+- `tests/verify_panel_anim.py` — panel açılışı/çıkışı, `task.delay` ile gizleme, yarış iptali
+- `tests/verify_panel_params.js` — "Süre"/"Kaç tane" önizleme planı, envanter, panel çıkış yuvası, kategori→yuva eşlemesi
+- `tests/verify_transfer_to_studio.py` — **Roblox aktarımı uçtan uca**: gerçek Figma dışa aktarımı → JSON →
+  Studio eklentisi bağlamaları → LocalScript → sahte Roblox (panel açılış/kapanış, döngü, geçiş/metin, efekt
+  ayarları, envanter resimleri; 116 animasyonun 180 track'inin tamamı)
+- `tests/verify_vfx.py` — **dünya efekti · karakter animasyonu · etkileşim (EIVfx)**: 55 kontrol (kütüphane bütünlüğü+gerekçe, bağlam→seçim, "efekt eklememek de karar", mobil bütçe, API reddi, cooldown/eşzamanlılık/kapasite, temizlik, animasyon önceliği, istemci–sunucu yetkisi, çalışma zamanı nesneleri)
+- `tests/verify_vfx_parity.py` — **EIVfx Lua ≡ JS**: 4692 satır birebir karar (4480 suggest · 12 plan · 20 senaryo · 15 animPlan · 128 canPlay · 5 limits · 32 describe) + `build_vfx_lua.py --check` senkronu
+- `assistant/tools/verify_anim.py`, `verify_learn.py`, `verify_merge.py`, `verify_anim_parity.py` — asistan modülleri
 
 ## Sürüm 3 (animasyon ve tamamlanan asistan)
 
@@ -33,4 +41,29 @@ Yapılmayanlar: animasyon seçici arayüzü, FX tespiti, `train_anim.py`, UIGrid
 - **Lua ≡ JS parite kapısı:** `assistant/tools/verify_anim_parity.py` — plan, 840 seçenek sırası ve 8 LocalScript kaynağı iki dilde bayt birebir.
 - **Veri üretimi:** `assistant/tools/build_anim_lua.py` hem `runtime/lua/EIAnim.lua` hem `runtime/js/ei-anim.js` veri bloğunu ve şablonu üretir.
 
-Kalan (bilinçli kapsam dışı): FX tespiti, döngü (`dongu`) animasyonları, `train_anim.py`, UIGridLayout/Item/DROP/MERGE öğrenmesi.
+## Sürüm 4 (v34 — dünya efekti · karakter animasyonu · etkileşim)
+
+- **Yeni bağımsız modül: EIVfx** (`assistant/vfx/vfx-library.json` + `runtime/lua/EIVfx.lua` + `runtime/js/ei-vfx.js`).
+  Mevcut `EIAnim` (GUI) **değişmedi**; EIVfx onun yanında durur ve dünya tarafını ekler.
+- **32 preset:** world 12 · char 9 · interact 4 · post 3 · cam 2 · decide 2 (26 istemci / 6 sunucu; mobilde kapanan 2).
+- **API beyaz listesi:** 23 sınıf + 10 enum; uydurma sınıf/özellik/enum → üreteç **durur** (kanıt: `ParticleEmitter.Gravity`,
+  `ParticleEmitterShape.Torus`, `Trail2` reddedildi).
+- **Karar:** `suggest` puanlı liste (daima `decide_none` ile biter) · `plan` alternatif + `skipped` sebep · `tryPlay`
+  cooldown/eşzamanlılık/kapasite · `tick`/`release` temizlik · mobilde `{budget 1, maxActive 24}`.
+- **Animasyon:** `animPlan` → `ok · tekrar · oncelik · asset-eksik · char-degil · animasyon-degil`; kimlik yoksa oynatılmaz.
+- **Yetki:** sunucu presetleri istemcide reddedilir, istemci görselleri sunucuda; RemoteEvent yeniden kullanılır.
+- **Paket:** `build_rbxmx.py` artık EIVfx'i de gömer (8 modül). Yeniden üretimden sonra `studio-plugin/` kopyasını güncelle.
+- Ayrıntılı rapor: kök dizinde `Efekt-Animasyon-Sistemi-Raporu.md`.
+
+## Sürüm 4 (v33 — GUI animasyonları, Süre, envanter)
+
+- **GUI/UI animasyonları:** `cikis`/`gecis`/`metin`/`fx` kategorileri üretime girdi. Panel açılışı `panel_*` havuzundan
+  (varsayılan **panel_slide_left_soft**: soldan sağa, yavaş, sönerek), kapanışta `exit_slide_left`; çıkış animasyonu
+  bitince panel gizlenir. Studio eklentisi panel öğelerini `EI_Panel` ile işaretler, JSON'daki `anim.hide` bağlanır.
+- **"Süre" ayarları:** kütüphane önizlemesi artık ayarlara uyar (`fxPreviewPlan`: Kaç tane / Süre / Görünürlük / Döngü …);
+  önceden önizleme sabit değerlerle oynuyordu, kaydırıcı hiçbir şeyi değiştirmiyordu.
+- **Envanter:** efekt resmi olarak kendi resimlerimiz (tasarımdaki PNG'ler) kullanılır; ek Figma katmanı yok;
+  envanter Roblox aktarımında sıfırlanır.
+- **Kapılar:** `tests/verify_panel_anim.py`, `tests/verify_panel_params.js`; parite fikstürüne panel + `cikis` eklendi.
+
+Kalan (bilinçli kapsam dışı): `train_anim.py`, UIGridLayout/Item/DROP/MERGE öğrenmesi, gerçek Studio'da otomatik test.

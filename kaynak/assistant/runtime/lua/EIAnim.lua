@@ -19,7 +19,7 @@ local EIAnim = {}
 local VERSION = "ei-anim-1"
 
 -- <<EI_ANIM_DATA>>
-local ANIM_IDS = {"attention_bell_ring", "attention_blink", "attention_bounce_big", "attention_ping", "attention_pulse_scale_big", "attention_shake_strong", "attention_wiggle", "attention_zoom_punch", "enter_bounce_drop", "enter_elastic_pop", "enter_fade", "enter_flip_in", "enter_grow_from_center", "enter_pop_scale", "enter_punch", "enter_reveal_showcase", "enter_rotate_in", "enter_scale_rotate", "enter_slide_down", "enter_slide_left", "enter_slide_right", "enter_slide_up", "enter_soft_scale", "enter_stagger_list", "enter_swing_door", "enter_zoom_in", "enter_zoom_out", "hover_bounce_small", "hover_brighten", "hover_glow", "hover_lift", "hover_rotate_tilt", "hover_scale_down", "hover_scale_up", "hover_shift_right", "hover_shine_sweep", "hover_stroke_grow", "hover_turn_card", "hover_wiggle_once", "loop_blink_cta", "loop_bobble", "loop_border_spin", "loop_breathe_transparency", "loop_color_cycle", "loop_expand_ring", "loop_float", "loop_gradient_sweep", "loop_pulse_scale", "loop_rotate_medium", "loop_rotate_reverse", "loop_rotate_slow", "loop_shake_slight", "loop_shimmer", "loop_wiggle_icon", "press_depress", "press_flash", "press_pop_scale", "press_punch", "press_ripple", "press_rotate_spin", "press_select_pop", "press_shake", "press_shrink_bounce", "press_shrink_only", "press_squash", "select_outline_pop"}
+local ANIM_IDS = {"attention_bell_ring", "attention_blink", "attention_bounce_big", "attention_ping", "attention_pulse_scale_big", "attention_shake_strong", "attention_wiggle", "attention_zoom_punch", "enter_bounce_drop", "enter_elastic_pop", "enter_fade", "enter_flip_in", "enter_grow_from_center", "enter_pop_scale", "enter_punch", "enter_reveal_showcase", "enter_rotate_in", "enter_scale_rotate", "enter_slide_down", "enter_slide_left", "enter_slide_right", "enter_slide_up", "enter_soft_scale", "enter_stagger_list", "enter_swing_door", "enter_zoom_in", "enter_zoom_out", "exit_blur_fade", "exit_drop_down", "exit_fade", "exit_fade_soft", "exit_pop_out", "exit_rotate_away", "exit_scale_fade", "exit_shrink", "exit_slide_down", "exit_slide_left", "exit_slide_right", "exit_slide_up", "exit_suck_in", "exit_wipe_left", "fx_aura_rotate_pulse", "fx_beam_sweep", "fx_bubble_rise", "fx_dust_float", "fx_gloss_sweep", "fx_glow_pulse", "fx_noise_drift", "fx_rays_rotate", "fx_rays_rotate_reverse", "fx_ring_ping", "fx_shine_sweep", "fx_smoke_drift", "fx_sparkle_twinkle", "fx_star_burst", "fx_vignette_breathe", "hover_bounce_small", "hover_brighten", "hover_glow", "hover_lift", "hover_rotate_tilt", "hover_scale_down", "hover_scale_up", "hover_shift_right", "hover_shine_sweep", "hover_stroke_grow", "hover_turn_card", "hover_wiggle_once", "loop_blink_cta", "loop_bobble", "loop_border_spin", "loop_breathe_transparency", "loop_color_cycle", "loop_expand_ring", "loop_float", "loop_gradient_sweep", "loop_pulse_scale", "loop_rotate_medium", "loop_rotate_reverse", "loop_rotate_slow", "loop_shake_slight", "loop_shimmer", "loop_wiggle_icon", "page_fade_cross", "page_flip_fold", "page_push_up", "page_scale_swap", "page_slide_left", "page_slide_right", "page_wipe", "page_zoom_through", "panel_fade_soft", "panel_rise_slow", "panel_scale_unfold", "panel_slide_down_soft", "panel_slide_left_soft", "panel_slide_right_soft", "panel_slide_up_soft", "panel_soft_zoom", "press_depress", "press_flash", "press_pop_scale", "press_punch", "press_ripple", "press_rotate_spin", "press_select_pop", "press_shake", "press_shrink_bounce", "press_shrink_only", "press_squash", "select_outline_pop", "text_glow_pulse", "text_pop_in", "text_shake_error", "text_slide_up_lines", "text_typewriter"}
 local ANIM_LIB = {
 	["attention_bell_ring"] = {
 		cat = "dikkat", trig = "event",
@@ -282,6 +282,303 @@ local ANIM_LIB = {
 			{d = 0.25, dl = 0, e = "Sine", ed = "Out", from = 1, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 0},
 		},
 	},
+	["exit_blur_fade"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ImageLabel"},
+		roles = {"modal", "panel"},
+		beauty = 3,
+		tracks = {
+			{d = 0.3, dl = 0, e = "Sine", ed = "Out", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1.08},
+			{d = 0.3, dl = 0, e = "Sine", ed = "In", from = 0, p = "GroupTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_drop_down"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ImageLabel"},
+		roles = {"card", "modal", "panel"},
+		beauty = 4,
+		tracks = {
+			{d = 0.45, dl = 0, e = "Quad", ed = "In", from = {0, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 240}},
+			{d = 0.4, dl = 0, e = "Sine", ed = "In", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_fade"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ImageButton", "ImageLabel", "ScrollingFrame", "TextButton", "TextLabel"},
+		roles = {"background", "label", "modal", "panel"},
+		beauty = 2,
+		tracks = {
+			{d = 0.2, dl = 0, e = "Quad", ed = "In", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_fade_soft"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ImageLabel", "ScrollingFrame", "TextButton", "TextLabel"},
+		roles = {"background", "label", "modal", "panel"},
+		beauty = 3,
+		tracks = {
+			{d = 0.4, dl = 0, e = "Sine", ed = "In", from = 0, p = "Transparency", rep = 0, rev = false, t = "self", to = 1},
+			{d = 0.4, dl = 0, e = "Sine", ed = "In", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 0.98},
+		},
+	},
+	["exit_pop_out"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"Frame", "ImageButton", "ImageLabel"},
+		roles = {"button", "icon", "reward"},
+		beauty = 4,
+		tracks = {
+			{d = 0.25, dl = 0, e = "Quint", ed = "Out", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1.3},
+			{d = 0.2, dl = 0, e = "Quad", ed = "In", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_rotate_away"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"Frame", "ImageButton", "ImageLabel"},
+		roles = {"badge", "card", "icon"},
+		beauty = 3,
+		tracks = {
+			{d = 0.3, dl = 0, e = "Quart", ed = "In", from = 0, p = "Rotation", rep = 0, rev = false, t = "self", to = 24},
+			{d = 0.3, dl = 0, e = "Quad", ed = "In", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 0.7},
+			{d = 0.24, dl = 0, e = "Quad", ed = "In", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_scale_fade"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ImageButton", "ImageLabel"},
+		roles = {"card", "modal", "panel"},
+		beauty = 4,
+		tracks = {
+			{d = 0.32, dl = 0, e = "Quart", ed = "In", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 0.94},
+			{d = 0.3, dl = 0, e = "Sine", ed = "In", from = 0, p = "Transparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_shrink"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ImageButton", "ImageLabel"},
+		roles = {"button", "modal", "panel"},
+		beauty = 3,
+		tracks = {
+			{d = 0.22, dl = 0, e = "Quad", ed = "In", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 0.85},
+			{d = 0.2, dl = 0, e = "Quad", ed = "In", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_slide_down"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame"},
+		roles = {"bottom-sheet", "modal", "panel"},
+		beauty = 3,
+		tracks = {
+			{d = 0.28, dl = 0, e = "Quad", ed = "In", from = {0, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 60}},
+			{d = 0.24, dl = 0, e = "Quad", ed = "In", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_slide_left"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"modal", "panel"},
+		beauty = 4,
+		tracks = {
+			{d = 0.3, dl = 0, e = "Quad", ed = "In", from = {0, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {-1, 0}, u = "scale"},
+			{d = 0.26, dl = 0, e = "Sine", ed = "In", from = 0, p = "Transparency", rep = 0, rev = false, t = "self", to = 0.35},
+		},
+	},
+	["exit_slide_right"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"modal", "panel"},
+		beauty = 4,
+		tracks = {
+			{d = 0.3, dl = 0, e = "Quad", ed = "In", from = {0, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {1, 0}, u = "scale"},
+			{d = 0.26, dl = 0, e = "Sine", ed = "In", from = 0, p = "Transparency", rep = 0, rev = false, t = "self", to = 0.35},
+		},
+	},
+	["exit_slide_up"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"CanvasGroup", "Frame"},
+		roles = {"banner", "modal", "panel"},
+		beauty = 3,
+		tracks = {
+			{d = 0.28, dl = 0, e = "Quad", ed = "In", from = {0, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {0, -60}},
+			{d = 0.24, dl = 0, e = "Quad", ed = "In", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["exit_suck_in"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"Frame", "ImageButton", "ImageLabel"},
+		roles = {"button", "icon"},
+		beauty = 4,
+		tracks = {
+			{d = 0.3, dl = 0, e = "Back", ed = "In", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 0},
+		},
+	},
+	["exit_wipe_left"] = {
+		cat = "cikis", trig = "hide",
+		cls = {"Frame", "ImageLabel"},
+		roles = {"bar", "divider", "panel"},
+		beauty = 3,
+		tracks = {
+			{d = 0.28, dl = 0, e = "Quart", ed = "In", from = {1, 1}, p = "Size", rep = 0, rev = false, t = "self", to = {0, 1}, u = "scale"},
+		},
+	},
+	["fx_aura_rotate_pulse"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 8, dl = 0, e = "Linear", ed = "InOut", from = 0, p = "Rotation", rep = -1, rev = false, t = "self", to = 360},
+			{d = 1.6, dl = 0, e = "Sine", ed = "InOut", from = 0.95, p = "Scale", rep = -1, rev = true, t = "UIScale", to = 1.08},
+		},
+	},
+	["fx_beam_sweep"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 1, dl = 1.2, e = "Quad", ed = "InOut", from = {-1.1, 0}, p = "Position", rep = -1, rev = false, t = "self", to = {1.1, 0}, u = "scale"},
+		},
+	},
+	["fx_bubble_rise"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"background"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 8, dl = {a = 0, b = 6}, e = "Sine", ed = "InOut", from = {0, 40}, p = "Position", rep = -1, rev = false, t = "self", to = {0, -80}, u = "scale"},
+			{d = 4, dl = 0, e = "Sine", ed = "InOut", from = 0.6, p = "Scale", rep = -1, rev = true, t = "UIScale", to = 1.1},
+		},
+	},
+	["fx_dust_float"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"background"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 7, dl = {a = 0, b = 5}, e = "Linear", ed = "InOut", from = {0, 30}, p = "Position", rep = -1, rev = false, t = "self", to = {0, -60}, u = "scale"},
+			{d = 2, dl = 0, e = "Sine", ed = "InOut", from = 0.9, p = "ImageTransparency", rep = -1, rev = true, t = "self", to = 0.2},
+		},
+	},
+	["fx_gloss_sweep"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 1.2, dl = 2, e = "Circular", ed = "InOut", from = {-1.2, 0.3}, p = "Position", rep = -1, rev = false, t = "self", to = {1.2, -0.3}, u = "scale"},
+		},
+	},
+	["fx_glow_pulse"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 1, dl = 0, e = "Sine", ed = "InOut", from = 0.35, p = "ImageTransparency", rep = -1, rev = true, t = "self", to = 0.75},
+		},
+	},
+	["fx_noise_drift"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"background"},
+		beauty = 3,
+		pool = "extra",
+		tracks = {
+			{d = 3, dl = 0, e = "Linear", ed = "InOut", from = {0, 0}, p = "Position", rep = -1, rev = true, t = "self", to = {0.05, 0.05}, u = "scale"},
+		},
+	},
+	["fx_rays_rotate"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 14, dl = 0, e = "Linear", ed = "InOut", from = 0, p = "Rotation", rep = -1, rev = false, t = "self", to = 360},
+		},
+	},
+	["fx_rays_rotate_reverse"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 10, dl = 0, e = "Linear", ed = "InOut", from = 360, p = "Rotation", rep = -1, rev = false, t = "self", to = 0},
+		},
+	},
+	["fx_ring_ping"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 2, dl = 0, e = "Sine", ed = "Out", from = 0.6, p = "Scale", rep = -1, rev = false, t = "UIScale", to = 1.5},
+			{d = 2, dl = 0, e = "Sine", ed = "In", from = 0.85, p = "ImageTransparency", rep = -1, rev = false, t = "self", to = 1},
+		},
+	},
+	["fx_shine_sweep"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 1.1, dl = 1.5, e = "Circular", ed = "InOut", from = {-1.3, 0}, p = "Position", rep = -1, rev = false, t = "self", to = {1.3, 0}, u = "scale"},
+			{d = 1.1, dl = 1.5, e = "Sine", ed = "InOut", from = 0, p = "ImageTransparency", rep = -1, rev = false, t = "self", to = 0.85},
+		},
+	},
+	["fx_smoke_drift"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"background"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 10, dl = 0, e = "Sine", ed = "InOut", from = {-30, 10}, p = "Position", rep = -1, rev = true, t = "self", to = {30, -20}, u = "scale"},
+			{d = 5, dl = 0, e = "Sine", ed = "InOut", from = 1, p = "Scale", rep = -1, rev = true, t = "UIScale", to = 1.15},
+		},
+	},
+	["fx_sparkle_twinkle"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 0.5, dl = {a = 0, b = 1.2}, e = "Back", ed = "Out", from = 0, p = "Scale", rep = -1, rev = true, t = "UIScale", to = 1},
+			{d = 1.6, dl = 0, e = "Sine", ed = "InOut", from = 0, p = "Rotation", rep = -1, rev = true, t = "self", to = 120},
+		},
+	},
+	["fx_star_burst"] = {
+		cat = "dongu", trig = "always",
+		cls = {"ImageLabel"},
+		roles = {"icon"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 0.35, dl = 0, e = "Back", ed = "Out", from = 0, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1.4},
+			{d = 0.7, dl = 0, e = "Quart", ed = "Out", from = -45, p = "Rotation", rep = 0, rev = false, t = "self", to = 45},
+			{d = 0.35, dl = 0.35, e = "Quad", ed = "Out", from = 0, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 1},
+		},
+	},
+	["fx_vignette_breathe"] = {
+		cat = "dongu", trig = "always",
+		cls = {"Frame", "ImageLabel"},
+		roles = {"background"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 2, dl = 0, e = "Sine", ed = "InOut", from = 0.55, p = "ImageTransparency", rep = -1, rev = true, t = "self", to = 0.75},
+		},
+	},
 	["hover_bounce_small"] = {
 		cat = "hover", trig = "mouseEnter",
 		cls = {"ImageButton", "ImageLabel"},
@@ -528,6 +825,176 @@ local ANIM_LIB = {
 			{d = 0.25, dl = 0, e = "Sine", ed = "InOut", from = 0, p = "Rotation", rep = -1, rev = true, t = "self", to = -6},
 		},
 	},
+	["page_fade_cross"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame"},
+		roles = {"page", "panel"},
+		beauty = 3,
+		pool = "extra",
+		tracks = {
+			{d = 0.3, dl = 0, e = "Sine", ed = "InOut", from = 1, p = "GroupTransparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["page_flip_fold"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame"},
+		roles = {"card", "page"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.5, dl = 0, e = "Quart", ed = "Out", from = 0.02, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1},
+		},
+	},
+	["page_push_up"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"page", "panel"},
+		beauty = 3,
+		pool = "extra",
+		tracks = {
+			{d = 0.36, dl = 0, e = "Quart", ed = "Out", from = {0, 1}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+		},
+	},
+	["page_scale_swap"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame"},
+		roles = {"modal", "page", "panel"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.4, dl = 0, e = "Quart", ed = "Out", from = 0.9, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1},
+			{d = 0.28, dl = 0, e = "Quad", ed = "Out", from = 1, p = "GroupTransparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["page_slide_left"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"page", "panel"},
+		beauty = 3,
+		pool = "extra",
+		tracks = {
+			{d = 0.36, dl = 0, e = "Quart", ed = "Out", from = {1, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+		},
+	},
+	["page_slide_right"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"page", "panel"},
+		beauty = 3,
+		pool = "extra",
+		tracks = {
+			{d = 0.36, dl = 0, e = "Quart", ed = "Out", from = {-1, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+		},
+	},
+	["page_wipe"] = {
+		cat = "giris", trig = "show",
+		cls = {"Frame", "ImageLabel"},
+		roles = {"page", "panel"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.42, dl = 0, e = "Quart", ed = "Out", from = {0, 1}, p = "Size", rep = 0, rev = false, t = "self", to = {1, 1}, u = "scale"},
+		},
+	},
+	["page_zoom_through"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame"},
+		roles = {"modal", "page", "panel"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.44, dl = 0, e = "Quint", ed = "Out", from = 1.4, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1},
+			{d = 0.3, dl = 0, e = "Quad", ed = "Out", from = 1, p = "ImageTransparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["panel_fade_soft"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ImageLabel", "ScrollingFrame", "TextLabel"},
+		roles = {"background", "modal", "panel"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.6, dl = 0, e = "Sine", ed = "Out", from = 1, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+			{d = 0.6, dl = 0, e = "Sine", ed = "Out", from = 0.98, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1},
+		},
+	},
+	["panel_rise_slow"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"card", "list", "modal", "panel"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.65, dl = 0, e = "Quart", ed = "Out", from = {0, 0.12}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+			{d = 0.45, dl = 0, e = "Sine", ed = "Out", from = 0.6, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["panel_scale_unfold"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ImageLabel"},
+		roles = {"card", "modal", "panel"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.5, dl = 0, e = "Back", ed = "Out", from = 0.9, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1},
+			{d = 0.4, dl = 0, e = "Sine", ed = "Out", from = 0.6, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["panel_slide_down_soft"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"banner", "modal", "panel"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 0.5, dl = 0, e = "Quint", ed = "Out", from = {0, -1}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+			{d = 0.38, dl = 0, e = "Sine", ed = "Out", from = 0.3, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["panel_slide_left_soft"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ImageLabel", "ScrollingFrame"},
+		roles = {"modal", "panel"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 0.55, dl = 0, e = "Quint", ed = "Out", from = {-1, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+			{d = 0.4, dl = 0, e = "Sine", ed = "Out", from = 0.3, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["panel_slide_right_soft"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ImageLabel", "ScrollingFrame"},
+		roles = {"modal", "panel"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 0.55, dl = 0, e = "Quint", ed = "Out", from = {1, 0}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+			{d = 0.4, dl = 0, e = "Sine", ed = "Out", from = 0.3, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["panel_slide_up_soft"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ScrollingFrame"},
+		roles = {"bottom-sheet", "modal", "panel"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 0.5, dl = 0, e = "Quint", ed = "Out", from = {0, 1}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}, u = "scale"},
+			{d = 0.38, dl = 0, e = "Sine", ed = "Out", from = 0.3, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["panel_soft_zoom"] = {
+		cat = "giris", trig = "show",
+		cls = {"CanvasGroup", "Frame", "ImageLabel"},
+		roles = {"card", "modal", "panel"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.6, dl = 0, e = "Sine", ed = "Out", from = 1.06, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1},
+			{d = 0.5, dl = 0, e = "Sine", ed = "Out", from = 1, p = "Transparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
 	["press_depress"] = {
 		cat = "basma", trig = "mouseDown",
 		cls = {"ImageButton", "TextButton"},
@@ -644,6 +1111,58 @@ local ANIM_LIB = {
 		tracks = {
 			{d = 0.2, dl = 0, e = "Quad", ed = "Out", from = 0, p = "Thickness", rep = 0, rev = false, t = "UIStroke", to = 3},
 			{d = 0.2, dl = 0, e = "Back", ed = "Out", from = 1, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1.03},
+		},
+	},
+	["text_glow_pulse"] = {
+		cat = "giris", trig = "show",
+		cls = {"TextButton", "TextLabel"},
+		roles = {"reward", "title", "value"},
+		beauty = 5,
+		pool = "extra",
+		tracks = {
+			{d = 0.8, dl = 0, e = "Sine", ed = "InOut", from = 0.9, p = "TextStrokeTransparency", rep = -1, rev = true, t = "self", to = 0.2},
+		},
+	},
+	["text_pop_in"] = {
+		cat = "giris", trig = "show",
+		cls = {"TextButton", "TextLabel"},
+		roles = {"label", "title", "value"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.4, dl = 0, e = "Back", ed = "Out", from = 0.5, p = "Scale", rep = 0, rev = false, t = "UIScale", to = 1},
+			{d = 0.2, dl = 0, e = "Quad", ed = "Out", from = 1, p = "TextTransparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["text_shake_error"] = {
+		cat = "giris", trig = "show",
+		cls = {"TextBox", "TextLabel"},
+		roles = {"label", "value"},
+		beauty = 2,
+		pool = "extra",
+		tracks = {
+			{d = 0.065, dl = 0, e = "Sine", ed = "InOut", from = {-5, 0}, p = "Position", rep = 5, rev = true, t = "self", to = {5, 0}},
+		},
+	},
+	["text_slide_up_lines"] = {
+		cat = "giris", trig = "show",
+		cls = {"TextLabel"},
+		roles = {"desc", "label", "title"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 0.55, dl = 0, e = "Quart", ed = "Out", from = {0, 24}, p = "Position", rep = 0, rev = false, t = "self", to = {0, 0}},
+			{d = 0.35, dl = 0, e = "Quad", ed = "Out", from = 1, p = "TextTransparency", rep = 0, rev = false, t = "self", to = 0},
+		},
+	},
+	["text_typewriter"] = {
+		cat = "giris", trig = "show",
+		cls = {"TextButton", "TextLabel"},
+		roles = {"desc", "label", "title"},
+		beauty = 4,
+		pool = "extra",
+		tracks = {
+			{d = 1.2, dl = 0, e = "Linear", ed = "InOut", from = 0, p = "MaxVisibleGraphemes", rep = 0, rev = false, t = "self", to = "len"},
 		},
 	},
 }
@@ -878,10 +1397,42 @@ local function delayOf(dl, extra)
 	return base + (extra or 0)
 end
 
--- İki elemanlı değerler: Position/Size → UDim2 (piksel ofseti), diğerleri (UIGradient.Offset) → Vector2.
-local function toValue(p, v)
+-- Sınıfa uymayan özellik adları sınıfın karşılığına çevrilir (v33):
+--   "Transparency" → CanvasGroup: GroupTransparency · resim: ImageTransparency · yazı: TextTransparency · çerçeve: BackgroundTransparency
+--   ImageTransparency/TextTransparency/GroupTransparency desteklemeyen sınıfta → BackgroundTransparency
+-- (Eski kütüphane kayıtları Frames üzerinde ImageTransparency diyordu; artık sessizce düşmez, çerçeve söner.)
+local function resolveProp(o, p)
+	if p == "Transparency" then
+		if o:IsA("UIStroke") then return "Transparency" end
+		if o:IsA("CanvasGroup") then return "GroupTransparency" end
+		if o:IsA("ImageLabel") or o:IsA("ImageButton") then return "ImageTransparency" end
+		if o:IsA("TextLabel") or o:IsA("TextButton") or o:IsA("TextBox") then return "TextTransparency" end
+		return "BackgroundTransparency"
+	end
+	if p == "ImageTransparency" and not (o:IsA("ImageLabel") or o:IsA("ImageButton") or o:IsA("Decal") or o:IsA("Texture")) then
+		return "BackgroundTransparency"
+	end
+	if p == "TextTransparency" and not (o:IsA("TextLabel") or o:IsA("TextButton") or o:IsA("TextBox")) then
+		return "BackgroundTransparency"
+	end
+	if p == "GroupTransparency" and not o:IsA("CanvasGroup") then
+		return "BackgroundTransparency"
+	end
+	return p
+end
+
+-- İki elemanlı değerler: u = "scale" → Position: temel konuma EKLENEN ölçek farkı (1 = üst öğe genişliği),
+-- Size: UDim2.fromScale · aksi hâlde Position/Size: piksel ofseti (UDim2.fromOffset), diğerleri: Vector2.
+local function toValue(p, v, u, base)
 	if type(v) == "table" then
 		if p == "Position" or p == "Size" then
+			if u == "scale" then
+				if p == "Size" then return UDim2.fromScale(v[1], v[2]) end
+				if base then
+					return UDim2.new(base.X.Scale + v[1], base.X.Offset, base.Y.Scale + v[2], base.Y.Offset)
+				end
+				return UDim2.fromScale(v[1], v[2])
+			end
 			return UDim2.fromOffset(v[1], v[2])
 		end
 		return Vector2.new(v[1], v[2])
@@ -889,32 +1440,49 @@ local function toValue(p, v)
 	return v
 end
 
+-- Metin uzunluğu ("len" hedefi, daktilo): hedef öğenin Text'inin karakter sayısı.
+local function lenValue(o)
+	local ok, s = pcall(function() return o.Text end)
+	if ok and type(s) == "string" then return #s end
+	return 0
+end
+
 -- mode: "show" (from'a set, to'ya tween) · "loop" (aynı, sürekli) · "hover"/"press" (mevcut → to)
---       · "leave" (BASE'e tween)
+--       · "hide" (çıkış: mevcut → to) · "leave" (BASE'e tween)
+-- Dönüş: en uzun izin süresi (sn) — panel kapanışında beklemek için.
 local function play(inst, animId, mode, extra)
 	local anim = ANIMS[animId]
-	if not anim or not inst then return end
+	if not anim or not inst then return 0 end
+	local longest = 0
 	for _, tr in ipairs(anim.tracks) do
+		local dly = delayOf(tr.dl, extra)
+		local d = (tonumber(tr.d) or 0) + dly
+		if d > longest then longest = d end
 		pcall(function()
 			local o = holder(inst, tr.t)
 			if not o then return end
-			local base = baseOf(o, tr.p)
+			local p = resolveProp(o, tr.p)
+			local base = baseOf(o, p)
 			local goal
 			if mode == "leave" then
 				goal = base
 			else
 				goal = tr.to
 				if goal == "cur" or goal == nil then goal = base end
+				if goal == "len" then goal = lenValue(o) end
 			end
 			if goal == nil then return end
-			goal = toValue(tr.p, goal)
+			goal = toValue(p, goal, tr.u, base)
 			if (mode == "show" or mode == "loop") and tr.from ~= nil and tr.from ~= "cur" then
-				o[tr.p] = toValue(tr.p, tr.from)
+				local from = tr.from
+				if from == "len" then from = 0 end
+				o[p] = toValue(p, from, tr.u, base)
 			end
-			local info = TweenInfo.new(tr.d, Enum.EasingStyle[tr.e], Enum.EasingDirection[tr.ed], tr.rep, tr.rev, delayOf(tr.dl, extra))
-			TweenService:Create(o, info, { [tr.p] = goal }):Play()
+			local info = TweenInfo.new(tr.d, Enum.EasingStyle[tr.e], Enum.EasingDirection[tr.ed], tr.rep, tr.rev, dly)
+			TweenService:Create(o, info, { [p] = goal }):Play()
 		end)
 	end
+	return longest
 end
 
 -- Pivot: AnchorPoint (0,0) → (0.5,0.5); konum, sol-üst köşe aynı kalacak şekilde düzeltilir.
@@ -958,6 +1526,7 @@ end
 -- Varsayılanlar aşağıda; JSON'da params tablosu varsa o değerler kullanılır.
 local FX_DEFAULTS = {
 	fall = { count = 12, seconds = 6, fade = 0.75, smallest = 0.6, largest = 1.0, loop = 1 },
+	confetti = { count = 14, seconds = 5, fade = 0.6, smallest = 0.6, largest = 1.0, loop = 1 },
 	burst = { count = 10, fade = 0.7, distance = 0.8, loop = 1 },
 	orbit = { count = 3, seconds = 4, loop = 1 },
 	twinkle = { count = 6, seconds = 0.6, smallest = 0.6, largest = 1.0, loop = 1 },
@@ -1076,13 +1645,14 @@ end
 -- Yağmur (fall): count parça, seconds süreyle üstten düşer. Parça aralığı = seconds / count.
 -- loop = 1: sürekli · loop = 0: count parçalık tek dalga.
 local function startFall(inst, params, confetti)
+	local kind = confetti and "confetti" or "fall"
 	local layer = fxLayer(inst)
 	local tpl = fxTemplate(inst)
-	local count = math.max(1, fxParam(params, "fall", "count"))
-	local seconds = math.max(0.2, fxParam(params, "fall", "seconds"))
-	local fade = fxParam(params, "fall", "fade")
-	local smin, smax = fxParam(params, "fall", "smallest"), fxParam(params, "fall", "largest")
-	local loop = fxLoop(params, "fall")
+	local count = math.max(1, fxParam(params, kind, "count"))
+	local seconds = math.max(0.2, fxParam(params, kind, "seconds"))
+	local fade = fxParam(params, kind, "fade")
+	local smin, smax = fxParam(params, kind, "smallest"), fxParam(params, kind, "largest")
+	local loop = fxLoop(params, kind)
 	task.spawn(function()
 		local made = 0
 		while layer.Parent do
@@ -1409,10 +1979,51 @@ local function replayIn(panel)
 	end
 end
 
+-- Panel kapanışı (v33): panele (ve içindeki hide bağlamalı öğelere) çıkış animasyonu oynatılır,
+-- animasyon bittikten SONRA Visible=false olur. Açma/kapama yarışı: her panelin sıra numarası vardır;
+-- kapanış beklerken panel yeniden açılırsa bekleyen gizleme iptal edilir.
+local PANEL_SEQ = {}
+-- Öğenin kendi hide (çıkış) animasyonu: bağlamadan veya PANEL_ANIM eşlemesinden.
+local PANEL_HIDE = {}
+for _, b in ipairs(BINDINGS) do
+	if b.hide then PANEL_HIDE[b.id] = b.hide end
+end
 local function openPanel(p)
 	if not p then return end
+	PANEL_SEQ[p] = (PANEL_SEQ[p] or 0) + 1   -- bekleyen kapanışı iptal et
 	p.Visible = true
 	replayIn(p)
+end
+-- Kapanış: panelin (ve içindeki hide bağlamalı öğelerin) çıkış animasyonu oynar; süre bitince Visible=false.
+-- Dönüş: kapanış animasyonu var mı? (false → anında gizlendi)
+local function closePanel(p, hideId)
+	if not p then return false end
+	local sec = 0
+	local pid = p:GetAttribute("EI_Id")
+	local id = hideId or (pid and PANEL_HIDE[pid]) or nil
+	if id then
+		local s = play(p, id, "hide", 0)
+		if s and s > sec then sec = s end
+	end
+	for _, b in ipairs(BINDINGS) do
+		if b.hide then
+			local d = MAP[b.id]
+			if d and d ~= p and d:IsDescendantOf(p) then
+				local s = play(d, b.hide, "hide", 0)
+				if s and s > sec then sec = s end
+			end
+		end
+	end
+	PANEL_SEQ[p] = (PANEL_SEQ[p] or 0) + 1
+	local seq = PANEL_SEQ[p]
+	if sec > 0 then
+		task.delay(sec + 0.02, function()
+			if p.Parent and PANEL_SEQ[p] == seq then p.Visible = false end
+		end)
+	else
+		p.Visible = false
+	end
+	return sec > 0
 end
 
 -- Buton bir panelin içindeyse en yakın _panel atası (kapatma için).
@@ -1476,17 +2087,17 @@ for _, a in ipairs(ACTIONS) do
 				openPanel(MAP[a.target])
 			elseif a.kind == "close" then
 				local t = closeTarget(btn, a.target)
-				if t then t.Visible = false end
+				if t then closePanel(t) end
 			elseif a.kind == "toggle" then
 				local t = MAP[a.target]
 				if t then
-					if t.Visible then t.Visible = false else openPanel(t) end
+					if t.Visible then closePanel(t) else openPanel(t) end
 				end
 			elseif a.kind == "tab" then
 				local target = MAP[a.target]
 				for _, o in ipairs(TAB_BY_GROUP[groupOf(btn)] or {}) do
 					local ot = MAP[o.target]
-					if ot and ot ~= target then ot.Visible = false end
+					if ot and ot ~= target and ot.Visible then closePanel(ot) end
 				end
 				openPanel(target)
 			end
@@ -1504,7 +2115,7 @@ local function buildSourceWith(bindings, lib, keyFn, extra)
 	local bl = {}
 	for _, b in ipairs(bindings) do
 		local item = { id = b.id }
-		for _, k in ipairs({ "show", "hover", "press", "loop", "selA" }) do
+		for _, k in ipairs({ "show", "hide", "hover", "press", "loop", "selA" }) do
 			if b[k] and lib[b[k]] then
 				item[k] = keyFn(b[k])
 				if not used[b[k]] then
@@ -1528,7 +2139,7 @@ local function buildSourceWith(bindings, lib, keyFn, extra)
 			local dl = tr.dl
 			if type(dl) == "table" then dl = { a = dl.a, b = dl.b, rnd = true } end
 			tracks[#tracks + 1] = { t = tr.t, p = tr.p, from = tr.from, to = tr.to, d = tr.d,
-				dl = dl, e = tr.e, ed = tr.ed, rep = tr.rep, rev = tr.rev }
+				dl = dl, e = tr.e, ed = tr.ed, rep = tr.rep, rev = tr.rev, u = tr.u }
 		end
 		animTable[#animTable + 1] = "[\"" .. keyFn(id) .. "\"] = { tracks = " .. lit(tracks) .. " }"
 	end
@@ -1587,14 +2198,26 @@ local function tokenBonus(id, style)
 	return 1
 end
 
+-- Ön ek süzgeci: prefixes nil → hepsi; tablo → yalnız o ön eklerle başlayan id'ler (panel_ / page_ …).
+local function prefixOk(id, prefixes)
+	if prefixes == nil then return true end
+	for _, p in ipairs(prefixes) do
+		if string.sub(id, 1, #p) == p then return true end
+	end
+	return false
+end
+
 -- Skorlu aday sırası: beauty × stil öncülü × stil bonusu ↓, eşitlikte id ↑ (rol → sınıf geri dönüşü).
-local function scoredCandidates(cat, cls, role, style)
+-- prefixes verilirse yalnız o ön ekler; aksi hâlde "extra" havuzu (panel_*) varsayılan sıralamanın dışında kalır.
+local function rankList(cat, cls, role, style, prefixes)
 	local bias = (STYLE_BIAS[style] and STYLE_BIAS[style][cat]) or 1
 	for pass = 1, 2 do
 		local list = {}
 		for _, id in ipairs(ANIM_IDS) do
 			local a = ANIM_LIB[id]
-			if a.cat == cat and listHas(a.cls, cls) and (pass == 2 or listHas(a.roles, role)) then
+			local poolOk = (prefixes ~= nil) or (a.pool ~= "extra")
+			local roleOk = (prefixes ~= nil) or (pass == 2) or listHas(a.roles, role)
+			if a.cat == cat and poolOk and roleOk and listHas(a.cls, cls) and prefixOk(id, prefixes) then
 				list[#list + 1] = id
 			end
 		end
@@ -1613,8 +2236,12 @@ local function scoredCandidates(cat, cls, role, style)
 	return {}
 end
 
-local function rankFor(cat, cls, role, style, learn)
-	local list = scoredCandidates(cat, cls, role, style)
+local function scoredCandidates(cat, cls, role, style)
+	return rankList(cat, cls, role, style, nil)
+end
+
+local function rankFor(cat, cls, role, style, learn, prefixes)
+	local list = rankList(cat, cls, role, style, prefixes)
 	if learn and #list > 0 then
 		local ctx = EILearn.ctxKey(style, cls, role, cat)
 		if learnedObs(learn, ctx) > 0 then
@@ -1622,6 +2249,44 @@ local function rankFor(cat, cls, role, style, learn)
 		end
 	end
 	return list
+end
+
+-- Panel açılış havuzu: yalnız panel_* (yumuşak panel girişleri) ve page_* (sayfa/sekme geçişleri).
+local PANEL_OPEN_PREFIX = { "panel_", "page_" }
+-- Varsayılan tercih (madde 3): butona basınca panel SOLDAN SAĞA doğru, yavaşça görünerek açılsın.
+-- Öğrenilmiş seçim varsa (kullanıcı panelde başka bir animasyon seçtiyse) tercih uygulanmaz — öğrenme kazanır.
+local PANEL_OPEN_PREF = { "panel_slide_left_soft", "panel_slide_right_soft", "panel_slide_up_soft", "panel_slide_down_soft" }
+local PANEL_CLOSE_PREF = { "exit_slide_left", "exit_fade_soft", "exit_slide_right", "exit_scale_fade" }
+local function preferFirst(list, pref)
+	local rest, out = {}, {}
+	for _, id in ipairs(list) do rest[#rest + 1] = id end
+	for _, want in ipairs(pref) do
+		for i, id in ipairs(rest) do
+			if id == want then
+				table.insert(out, id)
+				table.remove(rest, i)
+				break
+			end
+		end
+	end
+	for _, id in ipairs(rest) do out[#out + 1] = id end
+	return out
+end
+local function learnedHere(learn, style, cls, role, cat)
+	if not learn then return false end
+	return learnedObs(learn, EILearn.ctxKey(style, cls, role, cat)) > 0
+end
+local function panelOpenRank(cls, style, learn)
+	local list = rankFor("giris", cls, "panel", style, learn, PANEL_OPEN_PREFIX)
+	if learnedHere(learn, style, cls, "panel", "giris") then return list end
+	return preferFirst(list, PANEL_OPEN_PREF)
+end
+EIAnim.panelOpenRank = panelOpenRank
+-- Panel kapanış havuzu (çıkış): girişle uyumlu olsun diye tercih listesi vardır (öğrenme kazanır).
+local function panelCloseRank(cls, role, style, learn)
+	local list = rankFor("cikis", cls, role, style, learn)
+	if learnedHere(learn, style, cls, role, "cikis") then return list end
+	return preferFirst(list, PANEL_CLOSE_PREF)
 end
 
 local function learnedFor(learn, style, pe, cat)
@@ -1693,7 +2358,7 @@ local TAG_ANIM = {
 	shake = "attention_shake_strong", ping = "attention_ping", bell = "attention_bell_ring",
 	select = "select_outline_pop", secim = "select_outline_pop",
 }
-local SLOT_OF = { giris = "giris", hover = "hover", basma = "basma", dongu = "dongu", dikkat = "dongu", secim = "secim" }
+local SLOT_OF = { giris = "giris", cikis = "cikis", hover = "hover", basma = "basma", dongu = "dongu", dikkat = "dongu", secim = "secim" }
 
 -- Ad içindeki etiket kimlikleri, geçiş sırasıyla (ayırıcılar: harf/rakam dışı karakterler)
 local function tagIds(name)
@@ -1789,6 +2454,14 @@ function EIAnim.decideRanked(elements, style, learn)
 		if pe.depth <= 1 or cascadeIdx[i] ~= nil then
 			pe.rank.giris = rankFor("giris", cls, role, style, learn)
 		end
+		-- PANEL (madde 3, v33): _open hedefi ya da içinde _close olan öğe → yumuşak açılış + kapanış animasyonu.
+		-- Panel açılışı yalnız "panel_"/"page_" havuzundan; kapanış (hide) cikis kategorisinden.
+		if elements[i].panel then
+			local po = panelOpenRank(cls, style, learn)
+			if #po > 0 then pe.rank.giris = po end
+			pe.rank.cikis = panelCloseRank(cls, role, style, learn)
+			pe.isPanel = true
+		end
 		if cascadeIdx[i] ~= nil then
 			pe.delay = cascadeIdx[i] * CASCADE_STEP
 		end
@@ -1846,6 +2519,7 @@ function EIAnim.decideBindings(elements, style, learn)
 		if pe.rank.basma and #pe.rank.basma > 0 then b.press = pe.rank.basma[1]; any = true end
 		if pe.rank.dongu and #pe.rank.dongu > 0 then b.loop = pe.rank.dongu[1]; any = true end
 		if pe.rank.secim and #pe.rank.secim > 0 then b.selA = pe.rank.secim[1]; b.sel = pe.sel; any = true end
+		if pe.rank.cikis and #pe.rank.cikis > 0 then b.hide = pe.rank.cikis[1]; any = true end
 		if pe.delay and pe.delay > 0 then b.delay = pe.delay end
 		if pe.fx then b.fx = pe.fx; any = true end
 		if any then out[#out + 1] = b end

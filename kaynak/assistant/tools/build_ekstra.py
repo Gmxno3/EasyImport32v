@@ -24,8 +24,17 @@ import base64
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))          # work/
-LIB_DIR = os.path.join(ROOT, "kutuphane", "EkstraKutuphane")
-INDEX = os.path.join(ROOT, "kutuphane", "ekstra-kutuphane.json")
+def find_lib_root():
+    """Kütüphane kökü: kaynak ağacının içinde ya da repo kökünde olabilir (kaynak/../kutuphane)."""
+    for cand in (os.path.join(ROOT, "..", "kutuphane"), os.path.join(ROOT, "kutuphane")):
+        if os.path.isdir(cand):
+            return os.path.abspath(cand)
+    return os.path.abspath(os.path.join(ROOT, "..", "kutuphane"))
+
+
+LIB_ROOT = find_lib_root()
+LIB_DIR = os.path.join(LIB_ROOT, "EkstraKutuphane")
+INDEX = os.path.join(LIB_ROOT, "ekstra-kutuphane.json")
 RUNTIME = os.path.join(ROOT, "assistant", "runtime", "js", "ei-ekstra.js")
 SIZES = {"256px": False, "256w": True, "64px": False, "64w": True}  # klasör → geniş mi (256 tercih; yoksa 64)
 

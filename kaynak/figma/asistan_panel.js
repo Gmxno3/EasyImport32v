@@ -13,6 +13,7 @@
     var rowFx = [];   // satır i ↔ efekt kimliği (ad etiketinden; yoksa null)
     var rowParams = {};   // satır i → efekt parametreleri (kaydırıcılardan; JSON'a gider)
     var fxLibPick = {};   // satır i → seçilen ekstra kütüphane simge kimlikleri (JSON fxImages'e girer)
+    var fxOwnPick = {};   // satır i → kendi resimlerimiz (tasarımdaki PNG'ler) — Roblox aktarımında sıfırlanır
     var userFx = {};      // satır i → kütüphaneden atanan efekt ('none' = kaldır) — belge değişince sıfırlanır
     var userAnim = {};    // satır i → { kategori: animasyonKimliği } — kütüphaneden atanan animasyonlar
     var libCat = '', libQuery = '';
@@ -115,19 +116,23 @@
       // Tasarım kararı (madde 3 + P1): stil, konum, tutarlılık, öğrenme, kaskad, döngü, seçim grubu.
       // Studio ile AYNI kurallar (EIAnim.decideRanked).
       var els = rows.map(function (row, i) {
+        var node = rowNodes[i] || {};
         return { id: i + 1, name: row.name, cls: row.cls, depth: row.depth,
-                 parent: (row.parent === null ? null : row.parent + 1) };
+                 parent: (row.parent === null ? null : row.parent + 1),
+                 panel: !!node.panel };   // _open hedefi ya da içinde _close olan öğe (code.js markPanels)
       });
       var per = EIAnim.decideRanked(els, lastStyle, learn);
       rowFx = [];
       per.forEach(function (pe) {
         var i = pe.id - 1, row = rows[i];
         rowFx[i] = pe.fx || null;
-        ['giris', 'hover', 'basma', 'dongu', 'secim'].forEach(function (cat) {
+        ['giris', 'cikis', 'hover', 'basma', 'dongu', 'secim'].forEach(function (cat) {
           var opts = pe.rank[cat];
           if (!opts || !opts.length) return;
           // Tüm uygun animasyonlar: öneri başta, geri kalanları kategori sırasıyla (eskiden yalnız 1-2 seçenek vardı)
           var all = EIAnim.allForCat(cat);
+          // Not: kütüphane kategorileri üreteçte yuvaya katlanır (fx→dongu, gecis/metin→giris);
+          // bu yüzden allForCat yuvanın tüm animasyonlarını (kendi resim efektleri dâhil) verir.
           opts = opts.concat(all.filter(function (id) { return opts.indexOf(id) === -1; }));
           slots.push({ rowIndex: i, name: row.name, cls: row.cls, depth: row.depth, cat: cat, role: pe.role,
                        ctx: EILearn.ctxKey(lastStyle, row.cls, pe.role, cat), options: opts, selected: opts[0],
@@ -223,6 +228,41 @@
         inp.type = 'file'; inp.accept = 'image/png,image/jpeg'; inp.multiple = true;
         inp.onchange = function () { addPictures(fxSel, inp.files); inp.value = ''; };
         pic.appendChild(lab); pic.appendChild(inp);
+        // Envanter: tasarımdaki kendi resimlerimiz (ek katman açmadan efekt resmi olur)
+        var di = designImages();
+        var ownLab = document.createElement('div');
+        ownLab.className = 'as-fxlab';
+        ownLab.textContent = 'Envanter · kendi resimlerim (' + di.length + ') — Roblox aktarımında sıfırlanır';
+        pic.appendChild(ownLab);
+        var ownBox = document.createElement('div');
+        ownBox.className = 'as-fxthumbs';
+        if (!di.length) {
+          var none = document.createElement('span');
+          none.className = 'as-fxlab';
+          none.style.cssText = 'opacity:.7;font-size:11px;';
+          none.textContent = 'Tasarımda dışa aktarılabilir PNG yok (önce dışa aktar) — ya da yukarıdan dosya yükle.';
+          pic.appendChild(none);
+        } else {
+          var picked = ownPickedNames2(fxSel);
+          di.forEach(function (f) {
+            var nm = String(f.file).replace(/\.png$/i, '');
+            var t = document.createElement('button');
+            t.className = 'as-fxthumb' + (picked.indexOf(nm) !== -1 ? ' on' : '');
+            t.title = f.file + ' · efekte ekle/çıkar';
+            var im = document.createElement('img');
+            im.src = ownUrl(f); im.alt = f.file;
+            t.appendChild(im);
+            t.onclick = function () { toggleOwn(fxSel, f); };
+            ownBox.appendChild(t);
+          });
+          pic.appendChild(ownBox);
+        }
+        var resetBtn = document.createElement('button');
+        resetBtn.type = 'button'; resetBtn.className = 'ghost';
+        resetBtn.textContent = 'Envanteri sıfırla';
+        resetBtn.title = 'Kendi resim seçimlerini ve yüklenen dosyaları temizler';
+        resetBtn.onclick = function () { resetInventory(); };
+        pic.appendChild(resetBtn);
         var thumbs = document.createElement('div');
         thumbs.className = 'as-fxthumbs';
         (fxUploads[fxSel] || []).forEach(function (u) {
@@ -319,6 +359,7 @@
           params[k] = n;
           rng.value = n; num.value = n;
           applyToJson();
+          if (window.__ktRepaint) window.__ktRepaint();   // kütüphane önizlemesi anında tazelensin
         };
         rng.oninput = function () { setVal(rng.value); };
         num.onchange = function () { setVal(num.value); };
@@ -363,7 +404,48 @@
       });
     }
     function picCount(i) {
-      return (fxUploads[i] || []).filter(function (u) { return u.bytes; }).length + (fxLibPick[i] || []).length;
+      return (fxUploads[i] || []).filter(function (u) { return u.bytes; }).length
+        + (fxLibPick[i] || []).length + (fxOwnPick[i] || []).length;
+    }
+    // ---- Envanter (v33): kendi resimlerimiz — tasarımdaki PNG'ler + yüklediklerimiz.
+    // Roblox aktarımında (yeni dışa aktarma) liste sıfırlanır; bu yüzden burada yalnız bu oturumun seçimleri tutulur.
+    var ownUrls = {};   // dosya adı → blob URL (önbellek)
+    function ownUrl(f) {
+      if (ownUrls[f.file] === undefined) {
+        try { ownUrls[f.file] = URL.createObjectURL(new Blob([f.bytes], { type: 'image/png' })); }
+        catch (e) { ownUrls[f.file] = ''; }
+      }
+      return ownUrls[f.file];
+    }
+    function designImages() {
+      var list = (typeof files !== 'undefined' && files) ? files : [];
+      return list.filter(function (f) { return f && f.bytes; });
+    }
+    // Kütüphane kartındaki bilgi satırına güvenli mesaj (iki IIFE ayrı kapsamda)
+    function note(t) { try { if (typeof window.__ktSay === 'function') window.__ktSay(t); } catch (e) {} }
+    function ownPickedNames2(i) { return (fxOwnPick[i] || []).map(function (o) { return o.name; }); }
+    function toggleOwn(i, f) {
+      var name = String(f.file).replace(/\.png$/i, '');
+      var picks = fxOwnPick[i] || (fxOwnPick[i] = []);
+      var at = -1;
+      picks.forEach(function (o, k) { if (o.name === name) at = k; });
+      if (at >= 0) picks.splice(at, 1);
+      else {
+        if (picCount(i) >= PIC_MAX) { note('En çok ' + PIC_MAX + ' resim seçilebilir; birini kaldır.'); return; }
+        picks.push({ name: name, file: f.file });
+      }
+      save(); applyToJson(); renderFx();
+      if (typeof refreshDlAll === 'function') refreshDlAll();
+    }
+    // Envanteri sıfırla: kendi resim seçimleri + yüklenen dosyalar temizlenir (Studio'ya aktarımdan sonra istendiği gibi)
+    function resetInventory() {
+      var n = 0;
+      Object.keys(fxOwnPick).forEach(function (k) { n += (fxOwnPick[k] || []).length; });
+      Object.keys(fxUploads).forEach(function (k) { n += (fxUploads[k] || []).length; delete fxUploads[k]; });
+      fxOwnPick = {};
+      applyToJson(); renderFx();
+      if (typeof refreshDlAll === 'function') refreshDlAll();
+      if (n) note('Envanter sıfırlandı (' + n + ' resim).');
     }
     function toggleIcon(i, id) {
       var picks = fxLibPick[i] || (fxLibPick[i] = []);
@@ -411,7 +493,8 @@
       slots.forEach(function (sl) { if (sl.rowIndex === i && sl.selected) anims[sl.cat] = sl.selected; });
       return { name: row.name, cls: row.cls, fx: rowFx[i] || null,
                params: rowFx[i] ? paramsFor(i) : null,
-               picks: (fxLibPick[i] || []).slice(), anims: anims };
+               picks: (fxLibPick[i] || []).slice().concat((fxOwnPick[i] || []).map(function (o) { return o.name; })),
+               anims: anims };
     }
 
     // Kütüphaneden "İçeri ekle": simgeyi seçili öğenin içine görüntü olarak koyar (Studio ad eşleşmesiyle bağlanır)
@@ -444,7 +527,7 @@
       rowNodes.forEach(function (node) { delete node.anim; });
       var byRow = {};
       slots.forEach(function (sl) {
-        var key = { giris: 'show', hover: 'hover', basma: 'press', dongu: 'loop', secim: 'selA' }[sl.cat];
+        var key = { giris: 'show', cikis: 'hide', hover: 'hover', basma: 'press', dongu: 'loop', secim: 'selA' }[sl.cat];
         var entry = (byRow[sl.rowIndex] = byRow[sl.rowIndex] || {});
         entry[key] = nameOf(sl.selected);
         if (sl.delay > 0) entry.delay = sl.delay;
@@ -455,6 +538,7 @@
         byRow[ri].fx = fx;
         if (fx !== 'tpl' && EIAnim.FX_DEFAULTS[fx]) byRow[ri].params = paramsFor(ri);
         var pics = (fxUploads[ri] || []).filter(function (u) { return u.bytes; }).map(function (u) { return u.base; });
+        pics = pics.concat((fxOwnPick[ri] || []).map(function (o) { return o.name; }));
         pics = pics.concat(fxLibPick[ri] || []);
         if (fx === 'shine' || fx === 'sweep') pics.unshift('ei_shine_rectangle');
         if (pics.length) byRow[ri].fxImages = pics;
@@ -558,7 +642,7 @@
       rows: function () { return rows; },
       stateOf: stateOf, setFx: setFx, setAnim: setAnim, toggleIcon: toggleIcon, addIcon: addIconChild,
       applyToJson: applyToJson, paramsFor: paramsFor, PARAM_UI: PARAM_UI, FX_LABEL: FX_LABEL,
-      loopRow: loopRow, soundRows: soundRows
+      loopRow: loopRow, soundRows: soundRows, ownPick: fxOwnPick, PIC_KINDS: PIC_KINDS
     };
     return {
       show: function (doc) {
@@ -566,6 +650,7 @@
         rowParams = {}; fxSel = null; userFx = {}; userAnim = {};
         Object.keys(fxUploads).forEach(function (k) { delete fxUploads[k]; });
         fxLibPick = {};
+        fxOwnPick = {};   // envanter: Roblox aktarımı (yeni dışa aktarma) ile sıfırlanır
         try {
           run(doc);
           buildSlots();
@@ -607,7 +692,9 @@
   var EASE = { Linear: 'linear', Sine: 'ease-in-out', Quad: 'ease-out', Quint: 'cubic-bezier(.22,1,.36,1)',
                Back: 'cubic-bezier(.34,1.56,.64,1)', Elastic: 'cubic-bezier(.68,-.55,.27,1.55)',
                Bounce: 'cubic-bezier(.5,1.6,.4,.7)', Exponential: 'cubic-bezier(.16,1,.3,1)' };
-  var CAT_MAP = { giris: 'giris', hover: 'hover', basma: 'basma', dongu: 'dongu', dikkat: 'dongu', secim: 'secim' };
+  // Kütüphane kategorisi → çalışma zamanı yuvası. Kategoriler üreteçte katlanmıştır (fx→dongu,
+  // gecis/metin→giris, durum dışarıda), bu yüzden yedi kategori kalan her şeyi kapsar.
+  var CAT_MAP = { giris: 'giris', cikis: 'cikis', hover: 'hover', basma: 'basma', dongu: 'dongu', dikkat: 'dongu', secim: 'secim' };
 
   function rowsNow() { return window.__AS.rows(); }
   function hasRows() { return rowsNow().length > 0; }
@@ -664,6 +751,7 @@
   function num(v, d) { return typeof v === 'number' ? v : d; }
   function arr2(v) { return (v && v.length === 2) ? v : [0, 0]; }
   function say(t) { info.textContent = t; }
+  window.__ktSay = say;
 
   // Seçili katmanın gerçek görüntüsü (Figma'dan PNG); yoksa dolgu/yazıdan yedek kutu
   function snapFor(i) {
@@ -751,7 +839,26 @@
     say(ic ? (ic.cat + ' · ' + ic.label + (ic.wide ? ' (geniş)' : '')) : id);
   }
 
-  // Efekt önizlemesi: katmanın üstünde, seçili simgelerin (yoksa para) kopyalarıyla
+  // Önizleme planı (v33): efekt ayarlarını (kaç tane / süre / görünürlük …) JS önizlemesine çevirir.
+  // Kullanıcı kaydırıcıyı oynatınca önizleme ANINDA değişir — ayarların çalıştığı burada görülür.
+  function fxPreviewPlan(kind, p) {
+    var d = EIAnim.FX_DEFAULTS[kind] || {};
+    var v = function (k, lo, hi) {
+      var x = (p && typeof p[k] === 'number') ? p[k] : d[k];
+      if (typeof x !== 'number') x = lo;
+      return Math.min(hi, Math.max(lo, x));
+    };
+    var raw = (p && typeof p.loop === 'number') ? p.loop : d.loop;
+    return { loop: raw !== 0, count: Math.round(v('count', 1, 30)), seconds: v('seconds', 0.2, 12),
+             fade: v('fade', 0, 1), smallest: v('smallest', 0.1, 2), largest: v('largest', 0.1, 2),
+             distance: v('distance', 0.2, 1.2), sweep: v('sweep', 0.5, 6), pause: v('pause', 0, 4),
+             width: v('width', 0.05, 0.5), tilt: v('tilt', -45, 45), strength: v('strength', 0.1, 1),
+             scale: v('scale', 1, 3), pulse: v('pulse', 1, 1.4), hover: v('hover', 1, 1.3), press: v('press', 0.5, 1) };
+  }
+  window.__ktPreviewPlan = fxPreviewPlan;
+
+  // Efekt önizlemesi: katmanın üstünde, seçili simgelerin (yoksa para) kopyalarıyla.
+  // Ayarlar (Süre / Kaç tane / …) plana göre ANINDA uygulanır (v33 düzeltmesi).
   function playFx(kind) {
     clearBox();
     var row = curRow(); layerEl(row);
@@ -764,49 +871,64 @@
       im.style.width = size + 'px'; im.style.height = size + 'px'; im.style.left = x + 'px'; im.style.top = y + 'px';
       box.appendChild(im); return im;
     };
+    var plan = fxPreviewPlan(kind, paramTarget(kind));
     if (kind === 'fall' || kind === 'confetti') {
+      var made = 0;
       var fall = function () {
-        var p = piece(Math.random() * (W - 40), -30, 22 + Math.random() * 10);
-        var d = 1800 + Math.random() * 1200;
+        var size = 18 + 12 * plan.largest;
+        var p = piece(Math.random() * (W - 40), -30, size);
+        p.style.opacity = plan.fade;
+        var d = plan.seconds * 1000;
         p.animate([{ transform: 'translateY(0) rotate(0deg)' },
                    { transform: 'translateY(' + (H + 60) + 'px) rotate(' + (Math.random() * 720 - 360) + 'deg)' }],
                   { duration: d, easing: 'linear', fill: 'forwards' });
         setTimeout(function () { p.remove(); }, d + 50);
+        made += 1;
+        if (!plan.loop && made >= plan.count && timer) { clearInterval(timer); timer = null; }
       };
-      timer = setInterval(fall, 220);
+      timer = setInterval(fall, Math.max(30, plan.seconds * 1000 / plan.count));
     } else if (kind === 'burst') {
       var burst = function () {
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < plan.count; i++) {
           (function (ang) {
             var p = piece(W / 2 - 10, H / 2 - 10, 20);
-            var dx = Math.cos(ang) * 70, dy = Math.sin(ang) * 70;
-            p.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 },
+            p.style.opacity = plan.fade;
+            var dx = Math.cos(ang) * 70 * plan.distance, dy = Math.sin(ang) * 70 * plan.distance;
+            p.animate([{ transform: 'translate(0,0) scale(1)', opacity: plan.fade },
                        { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(.6)', opacity: 0 }],
                       { duration: 800, easing: 'ease-out', fill: 'forwards' });
             setTimeout(function () { p.remove(); }, 850);
-          })(i / 10 * Math.PI * 2);
+          })(i / plan.count * Math.PI * 2);
         }
       };
-      burst(); timer = setInterval(burst, 1400);
+      burst();
+      if (plan.loop) timer = setInterval(burst, 1400);
     } else if (kind === 'orbit') {
       var ring = document.createElement('div');
       ring.style.cssText = 'position:absolute;left:50%;top:50%;width:0;height:0';
       box.appendChild(ring);
-      for (var k = 0; k < 3; k++) {
+      for (var k = 0; k < plan.count; k++) {
         var p = document.createElement('img'); p.src = EKSTRA_THUMBS[pick()]; p.className = 'kt-fxp';
-        p.style.width = '22px'; p.style.height = '22px';
-        p.style.left = (Math.cos(k * 2.094) * 58 - 11) + 'px'; p.style.top = (Math.sin(k * 2.094) * 58 - 11) + 'px';
+        var rad = k / plan.count * Math.PI * 2;
+        var sz = 14 + 10 * plan.largest;
+        p.style.width = sz + 'px'; p.style.height = sz + 'px';
+        p.style.left = (Math.cos(rad) * 58 - sz / 2) + 'px'; p.style.top = (Math.sin(rad) * 58 - sz / 2) + 'px';
         ring.appendChild(p);
       }
-      ring.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }], { duration: 4000, iterations: Infinity, easing: 'linear' });
+      ring.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+                   { duration: plan.seconds * 1000, iterations: plan.loop ? Infinity : 1, easing: 'linear' });
     } else if (kind === 'twinkle') {
+      var twMade = 0;
       var tw = function () {
-        var p = piece(Math.random() * (W - 20), Math.random() * (H - 20), 18);
-        p.animate([{ transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }, { transform: 'scale(0)', opacity: 0 }],
-                  { duration: 700, easing: 'ease-in-out' });
-        setTimeout(function () { p.remove(); }, 750);
+        var p = piece(Math.random() * (W - 20), Math.random() * (H - 20), 12 + 12 * plan.largest);
+        var d = plan.seconds * 1000;
+        p.animate([{ transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1)', opacity: plan.fade }, { transform: 'scale(0)', opacity: 0 }],
+                  { duration: d, easing: 'ease-in-out' });
+        setTimeout(function () { p.remove(); }, d + 50);
+        twMade += 1;
+        if (!plan.loop && twMade >= plan.count && timer) { clearInterval(timer); timer = null; }
       };
-      timer = setInterval(tw, 250);
+      timer = setInterval(tw, Math.max(30, plan.seconds * 1000 / plan.count));
     } else if (kind === 'shine' || kind === 'sweep') {
       // Parlama, öğenin İÇİNDE kırpılır; soldan sağa geçer
       var base = box.firstChild, rr = base ? base.getBoundingClientRect() : null, bb = box.getBoundingClientRect();
@@ -815,19 +937,25 @@
         wrap.style.cssText = 'position:absolute;overflow:hidden;pointer-events:none;border-radius:' + ((base.style && base.style.borderRadius) || '0') +
           ';left:' + (rr.left - bb.left) + 'px;top:' + (rr.top - bb.top) + 'px;width:' + rr.width + 'px;height:' + rr.height + 'px;';
         var band = document.createElement('div');
-        band.style.cssText = 'position:absolute;top:-30%;height:160%;width:35%;transform:rotate(20deg);' +
-          'background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.8),rgba(255,255,255,0));';
+        band.style.cssText = 'position:absolute;top:-30%;height:160%;width:' + (plan.width * 100) + '%;' +
+          'transform:rotate(' + plan.tilt + 'deg);' +
+          'background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,' + plan.strength + '),rgba(255,255,255,0));';
         wrap.appendChild(band); box.appendChild(wrap);
-        band.animate([{ left: '-45%' }, { left: '110%' }], { duration: 1400, iterations: Infinity, easing: 'ease-in-out', endDelay: 900 });
+        band.animate([{ left: '-45%' }, { left: '110%' }],
+                     { duration: plan.sweep * 1000, iterations: plan.loop ? Infinity : 1,
+                       easing: 'ease-in-out', endDelay: plan.pause * 1000 });
       }
     } else if (kind === 'orb') {
       var glow = document.createElement('div');
       glow.className = 'kt-fxp';
-      glow.style.cssText = 'left:' + (W / 2 - 70) + 'px;top:' + (H / 2 - 70) + 'px;width:140px;height:140px;border-radius:50%;background:rgba(255,220,120,.28);';
+      var gs = 110 * plan.scale;
+      glow.style.cssText = 'left:' + (W / 2 - gs / 2) + 'px;top:' + (H / 2 - gs / 2) + 'px;width:' + gs + 'px;height:' + gs +
+        'px;border-radius:50%;background:rgba(255,220,120,.28);';
       box.insertBefore(glow, box.firstChild);
-      glow.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }], { duration: 1600, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
+      glow.animate([{ transform: 'scale(1)' }, { transform: 'scale(' + plan.pulse + ')' }],
+                   { duration: 1600, direction: 'alternate', iterations: Infinity, easing: 'ease-in-out' });
     } else if (kind === 'smooth') {
-      layerEl(row).animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }], { duration: 300, fill: 'forwards', easing: 'ease-out' });
+      layerEl(row).animate([{ transform: 'scale(1)' }, { transform: 'scale(' + plan.hover + ')' }], { duration: 300, fill: 'forwards', easing: 'ease-out' });
     }
     var f = FX_KINDS.filter(function (x) { return x[0] === kind; })[0];
     say((f ? f[1] : kind) + ' · ' + (row ? row.name : '') + ' · ' + (picks.length ? picks.length + ' simge' : 'varsayılan para'));
@@ -859,6 +987,7 @@
         var n = Number(v); if (!isFinite(n)) return;
         target[k] = n; rng.value = n; nb.value = n;
         var s = st(); if (s && s.fx === sel) window.__AS.applyToJson();
+        replayCurrent();   // ayar değişti → önizleme anında yenisini gösterir (v33 düzeltmesi)
       };
       rng.oninput = function () { set(rng.value); };
       nb.onchange = function () { set(nb.value); };

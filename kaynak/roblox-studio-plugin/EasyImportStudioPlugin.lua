@@ -2203,6 +2203,7 @@ local function buildEasyImportHierarchy(doc, opts)
 			end
 			if item.panel then
 				table.insert(panelList, animIdCounter)
+				inst:SetAttribute("EI_Panel", true) -- v33: asistan yolunda panel giriş/çıkış animasyonu alsın
 				inst.Visible = false -- paneller başlangıçta kapalı; _open / _tab ile açılır
 			end
 			if item.tabgroup then table.insert(groupList, animIdCounter) end
@@ -2243,7 +2244,7 @@ local function buildEasyImportHierarchy(doc, opts)
 				end
 				-- seçim grubu: üst öğenin EI_Id'si (kalıcı _select kardeşleri birlikte yönetir)
 				local pid = (parent and parent:GetAttribute("EI_Id")) or 0
-				table.insert(animBindings, { id = animIdCounter, show = a.show, hover = a.hover, press = a.press,
+				table.insert(animBindings, { id = animIdCounter, show = a.show, hide = a.hide, hover = a.hover, press = a.press,
 					loop = a.loop, selA = a.selA, sel = a.selA and pid or nil, delay = a.delay, fx = a.fx, params = a.params })
 			end
 		end
@@ -2867,7 +2868,8 @@ local function buildEasyImportHierarchy(doc, opts)
 					end
 					local pp = d.Parent
 					local pid = (pp and pp:GetAttribute("EI_Id")) or 0
-					table.insert(elements, { id = id, name = d.Name, cls = d.ClassName, depth = depth, parent = pid })
+					table.insert(elements, { id = id, name = d.Name, cls = d.ClassName, depth = depth, parent = pid,
+						panel = (d:GetAttribute("EI_Panel") == true) or nil })
 				end
 			end
 			local plan = EIAnim.decideBindings(elements, assist.style or "belirsiz", assist.learn)

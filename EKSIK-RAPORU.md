@@ -62,3 +62,18 @@ Etiket = Figma katman adına yazılan kısa ek (ör. `_button`, `_pop`, `_fall`)
 - **Ücretsiz + ücretli paket:** temel özellikler bedava, gelişmiş özellikler (ör. efekt kütüphanesi, UI Tools) ücretli.
 - **Deneme süresi:** belli gün ücretsiz dene, sonra satın al.
 Bunu plugin bittiğinde seçeceğiz.
+
+## 8. Dünya efekti · karakter animasyonu · dünya etkileşimi (v34 — eklendi ✅)
+
+Tarama (19 Roblox sınıfı) dünya tarafının **tamamen eksik** olduğunu gösterdi (kategori C); bu turda eklendi:
+- ✅ **Dünya VFX:** ParticleEmitter (tek dalga `Emit`), Trail, Beam, Highlight, PointLight — 12 hazır + bileşen preset'i.
+- ✅ **Karakter animasyonu:** Animator + AnimationTrack; öncelik/ağırlık/çakışma yönetimi (`animPlan`), kimlik yoksa **oynatılmaz**.
+- ✅ **Dünya etkileşimi:** ProximityPrompt, ClickDetector, Tool, RemoteEvent (sunucu yetkili).
+- ✅ **Post-process + kamera:** ColorCorrectionEffect, BlurEffect, BloomEffect, Atmosphere, FOV tween (istemci/sunucu ayrımıyla).
+- ✅ **Kapılar:** `tests/verify_vfx.py` (55 kontrol) · `tests/verify_vfx_parity.py` (Lua ≡ JS 4692 satır) · `build_vfx_lua.py --check`.
+- ✅ API beyaz listesi: uydurma sınıf/özellik/enum → üreteç **durur** (`Gravity`, `ParticleEmitterShape.Torus`, `Trail2` reddedildi).
+
+**Hâlâ eksik / doğrulanmadı ⚠️:** Figma dünya etiketleri (`_3d`, `_tilt`, `_billboard`, `_surface`, `_prompt`, `_hold`);
+panel/eklenti arayüzünde VFX düğmesi ve "motoru oyuna yerleştir" akışı; gerçek Studio'da görsel doğrulama; gerçek
+mobil cihazda FPS ölçümü; resmî Roblox doküman teyidi (ortamın ağ kısıtı); gerçek `AnimationId` varlıkları (projeden gelir).
+Ayrıntı: `Efekt-Animasyon-Sistemi-Raporu.md`.

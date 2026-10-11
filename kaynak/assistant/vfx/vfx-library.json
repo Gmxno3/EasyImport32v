@@ -1,0 +1,3129 @@
+{
+  "$schema": "ei-vfx-library v1",
+  "version": 1,
+  "note": "Roblox dünya efektleri, karakter animasyonları ve etkileşimler: kural + parametre + gerekçe. Kod üreteçle yazılır (assistant/tools/build_vfx_lua.py); bu dosya ve üretilen EIVfx.lua/ei-vfx.js ELLE DÜZENLENMEZ, değişiklik üreteçle + kapılarla yapılır.",
+  "languages": {
+    "lua": "runtime/lua/EIVfx.lua",
+    "js": "runtime/js/ei-vfx.js"
+  },
+  "costTiers": {
+    "1": "hafif (mobil dostu)",
+    "2": "orta",
+    "3": "ağır (mobilde önerilmez)"
+  },
+  "authority": {
+    "client": "yalnız görsel — istemci oynatır",
+    "server": "oyun durumu/ortak görünüm — sunucu uygular"
+  },
+  "anchors": {
+    "AnimationId": "boş bırakılırsa efekt oynatılmaz; proje kendi animasyon kimliğini verir (uydurulmaz)"
+  },
+  "presets": [
+    {
+      "id": "world_hit_spark",
+      "cat": "world",
+      "label": "Çarpma Kıvılcımı",
+      "ctx": [
+        "combat",
+        "pvp",
+        "rpg",
+        "action",
+        "survival"
+      ],
+      "events": [
+        "hit",
+        "damage"
+      ],
+      "targets": [
+        "npc",
+        "player",
+        "part"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.6,
+      "cooldown": 0.12,
+      "maxActive": 14,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter",
+        "PointLight"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Hit"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Kivilcim"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243098098"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 0
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.15,
+              0.35
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              18,
+              26
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              180,
+              180
+            ]
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.5
+              ],
+              [
+                0.2,
+                0.15
+              ],
+              [
+                1,
+                0
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0
+              ],
+              [
+                0.4,
+                0.35
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  255,
+                  235,
+                  170
+                ]
+              ],
+              [
+                0.5,
+                [
+                  255,
+                  190,
+                  80
+                ]
+              ],
+              [
+                1,
+                [
+                  255,
+                  150,
+                  60
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.6
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0
+          },
+          "Acceleration": {
+            "t": "v3",
+            "v": [
+              0,
+              -40,
+              0
+            ]
+          },
+          "Drag": {
+            "t": "n",
+            "v": 6
+          },
+          "Rotation": {
+            "t": "nr",
+            "v": [
+              0,
+              360
+            ]
+          },
+          "RotSpeed": {
+            "t": "nr",
+            "v": [
+              -220,
+              220
+            ]
+          },
+          "ZOffset": {
+            "t": "n",
+            "v": 2
+          },
+          "Shape": {
+            "t": "en",
+            "v": [
+              "ParticleEmitterShape",
+              "Sphere"
+            ]
+          },
+          "ShapeStyle": {
+            "t": "en",
+            "v": [
+              "ParticleEmitterShapeStyle",
+              "Volume"
+            ]
+          },
+          "EmissionDirection": {
+            "t": "en",
+            "v": [
+              "NormalId",
+              "Top"
+            ]
+          }
+        },
+        "PointLight": {
+          "Color": {
+            "t": "c3",
+            "v": [
+              255,
+              190,
+              110
+            ]
+          },
+          "Brightness": {
+            "t": "n",
+            "v": 2
+          },
+          "Range": {
+            "t": "n",
+            "v": 9
+          },
+          "Shadows": {
+            "t": "b",
+            "v": false
+          }
+        }
+      },
+      "burst": {
+        "times": {
+          "t": "n",
+          "v": 18
+        },
+        "count": {
+          "t": "n",
+          "v": 1
+        }
+      },
+      "cleanup": "delay",
+      "why": "Kısa ve sonlu: darbe anını okutur, sürekli yanmaz. Mobilde tek emitter + sonlu ömür.",
+      "freq": "per_event"
+    },
+    {
+      "id": "world_slash_trail",
+      "cat": "world",
+      "label": "Kılıç İzi (Trail)",
+      "ctx": [
+        "combat",
+        "pvp",
+        "rpg",
+        "action"
+      ],
+      "events": [
+        "swing",
+        "attack",
+        "tool_activate"
+      ],
+      "targets": [
+        "player",
+        "npc",
+        "tool"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.35,
+      "cooldown": 0.18,
+      "maxActive": 8,
+      "objects": [
+        "Attachment",
+        "Trail"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Swing"
+          }
+        },
+        "Trail": {
+          "Name": {
+            "t": "s",
+            "v": "Iz"
+          },
+          "Lifetime": {
+            "t": "n",
+            "v": 0.22
+          },
+          "MinLength": {
+            "t": "n",
+            "v": 0.15
+          },
+          "FaceCamera": {
+            "t": "b",
+            "v": true
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  255,
+                  255,
+                  255
+                ]
+              ],
+              [
+                1,
+                [
+                  150,
+                  200,
+                  255
+                ]
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "WidthScale": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                0.15
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.4
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0.2
+          },
+          "TextureMode": {
+            "t": "en",
+            "v": [
+              "TextureMode",
+              "Stretch"
+            ]
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Trail, parçacıktan ucuzdur ve saldırının YÖNÜNÜ gösterir (görsel okunabilirlik > süs).",
+      "freq": "per_event"
+    },
+    {
+      "id": "world_muzzle_flash",
+      "cat": "world",
+      "label": "Namlu Ateşi",
+      "ctx": [
+        "combat",
+        "pvp",
+        "shooter",
+        "action"
+      ],
+      "events": [
+        "fire",
+        "shoot",
+        "tool_activate"
+      ],
+      "targets": [
+        "tool",
+        "player",
+        "part"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.15,
+      "cooldown": 0.08,
+      "maxActive": 10,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter",
+        "PointLight"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Muzzle"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Alev"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243660364"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 0
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.05,
+              0.12
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              12,
+              20
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              12,
+              12
+            ]
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.6
+              ],
+              [
+                1,
+                0.1
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  255,
+                  240,
+                  200
+                ]
+              ],
+              [
+                1,
+                [
+                  255,
+                  140,
+                  40
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 1
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0
+          },
+          "ZOffset": {
+            "t": "n",
+            "v": 3
+          }
+        },
+        "PointLight": {
+          "Color": {
+            "t": "c3",
+            "v": [
+              255,
+              200,
+              120
+            ]
+          },
+          "Brightness": {
+            "t": "n",
+            "v": 3
+          },
+          "Range": {
+            "t": "n",
+            "v": 12
+          },
+          "Shadows": {
+            "t": "b",
+            "v": false
+          }
+        }
+      },
+      "burst": {
+        "times": {
+          "t": "n",
+          "v": 1
+        },
+        "count": {
+          "t": "n",
+          "v": 6
+        }
+      },
+      "cleanup": "delay",
+      "why": "Tek karelik ışık: ateşin ANLIK olduğunu gösterir; kalıcı ışık yer (performans).",
+      "freq": "per_event"
+    },
+    {
+      "id": "world_impact_dust",
+      "cat": "world",
+      "label": "İniş Tozu (halka)",
+      "ctx": [
+        "obby",
+        "parkour",
+        "combat",
+        "survival",
+        "simulator"
+      ],
+      "events": [
+        "land",
+        "impact",
+        "jump_land"
+      ],
+      "targets": [
+        "player",
+        "npc",
+        "part"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.8,
+      "cooldown": 0.25,
+      "maxActive": 6,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Land"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Toz"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243660364"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 0
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.4,
+              0.8
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              4,
+              9
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              70,
+              70
+            ]
+          },
+          "Acceleration": {
+            "t": "v3",
+            "v": [
+              0,
+              -8,
+              0
+            ]
+          },
+          "Drag": {
+            "t": "n",
+            "v": 3
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.8
+              ],
+              [
+                1,
+                2.2
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.35
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  210,
+                  200,
+                  180
+                ]
+              ],
+              [
+                1,
+                [
+                  170,
+                  165,
+                  150
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 1
+          },
+          "Rotation": {
+            "t": "nr",
+            "v": [
+              0,
+              360
+            ]
+          },
+          "Shape": {
+            "t": "en",
+            "v": [
+              "ParticleEmitterShape",
+              "Disc"
+            ]
+          },
+          "EmissionDirection": {
+            "t": "en",
+            "v": [
+              "NormalId",
+              "Top"
+            ]
+          }
+        }
+      },
+      "burst": {
+        "times": {
+          "t": "n",
+          "v": 1
+        },
+        "count": {
+          "t": "n",
+          "v": 10
+        }
+      },
+      "cleanup": "delay",
+      "why": "İnişin ağırlığını gösterir; sürekli değil, tek dalga.",
+      "freq": "per_event"
+    },
+    {
+      "id": "world_pickup_pop",
+      "cat": "world",
+      "label": "Toplama Patlaması",
+      "ctx": [
+        "simulator",
+        "tycoon",
+        "rpg",
+        "casual",
+        "obby"
+      ],
+      "events": [
+        "pickup",
+        "collect",
+        "claim"
+      ],
+      "targets": [
+        "part",
+        "item",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.5,
+      "cooldown": 0.05,
+      "maxActive": 12,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Pick"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Parlama"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243098098"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 0
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.25,
+              0.5
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              6,
+              12
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              180,
+              180
+            ]
+          },
+          "Acceleration": {
+            "t": "v3",
+            "v": [
+              0,
+              6,
+              0
+            ]
+          },
+          "Drag": {
+            "t": "n",
+            "v": 2
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.35
+              ],
+              [
+                1,
+                0
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  255,
+                  245,
+                  190
+                ]
+              ],
+              [
+                1,
+                [
+                  255,
+                  200,
+                  70
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.8
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0
+          }
+        }
+      },
+      "burst": {
+        "times": {
+          "t": "n",
+          "v": 1
+        },
+        "count": {
+          "t": "n",
+          "v": 8
+        }
+      },
+      "cleanup": "delay",
+      "why": "Ödül anında kısa vurgu; kalıcı bilgi mevcut UI animasyon sistemiyle verilir (yeniden kullanım).",
+      "freq": "per_event"
+    },
+    {
+      "id": "world_death_burst",
+      "cat": "world",
+      "label": "Yok Olma Patlaması",
+      "ctx": [
+        "combat",
+        "pvp",
+        "rpg",
+        "action",
+        "survival"
+      ],
+      "events": [
+        "death",
+        "defeat",
+        "destroy"
+      ],
+      "targets": [
+        "npc",
+        "part",
+        "item"
+      ],
+      "authority": "client",
+      "cost": 2,
+      "mobile": true,
+      "trig": "event",
+      "dur": 1.0,
+      "cooldown": 0.3,
+      "maxActive": 5,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter",
+        "Highlight"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Death"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Dagilma"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243098098"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 0
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.4,
+              0.9
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              10,
+              18
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              180,
+              180
+            ]
+          },
+          "Acceleration": {
+            "t": "v3",
+            "v": [
+              0,
+              -25,
+              0
+            ]
+          },
+          "Drag": {
+            "t": "n",
+            "v": 1.5
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.6
+              ],
+              [
+                1,
+                0.1
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0
+              ],
+              [
+                0.5,
+                0.4
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  255,
+                  120,
+                  90
+                ]
+              ],
+              [
+                1,
+                [
+                  120,
+                  40,
+                  40
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.5
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0.3
+          }
+        },
+        "Highlight": {
+          "FillColor": {
+            "t": "c3",
+            "v": [
+              255,
+              90,
+              70
+            ]
+          },
+          "FillTransparency": {
+            "t": "n",
+            "v": 0.55
+          },
+          "OutlineColor": {
+            "t": "c3",
+            "v": [
+              255,
+              255,
+              255
+            ]
+          },
+          "OutlineTransparency": {
+            "t": "n",
+            "v": 0
+          },
+          "DepthMode": {
+            "t": "en",
+            "v": [
+              "HighlightDepthMode",
+              "AlwaysOnTop"
+            ]
+          }
+        }
+      },
+      "burst": {
+        "times": {
+          "t": "n",
+          "v": 1
+        },
+        "count": {
+          "t": "n",
+          "v": 14
+        }
+      },
+      "cleanup": "delay",
+      "why": "Yok olma anını netleştirir; Highlight okunurluğu artırır ve süre sonunda temizlenir.",
+      "freq": "per_event"
+    },
+    {
+      "id": "world_heal_aura",
+      "cat": "world",
+      "label": "Şifa Aurası (durum boyunca)",
+      "ctx": [
+        "rpg",
+        "survival",
+        "combat",
+        "simulator"
+      ],
+      "events": [
+        "heal_start",
+        "buff_start"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 2,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0,
+      "maxActive": 3,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Aura"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Sifa"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243098098"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 14
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.8,
+              1.4
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              2,
+              5
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              12,
+              12
+            ]
+          },
+          "Acceleration": {
+            "t": "v3",
+            "v": [
+              0,
+              14,
+              0
+            ]
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.3
+              ],
+              [
+                1,
+                0.9
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.5
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  170,
+                  255,
+                  190
+                ]
+              ],
+              [
+                1,
+                [
+                  90,
+                  220,
+                  140
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.7
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0
+          },
+          "Shape": {
+            "t": "en",
+            "v": [
+              "ParticleEmitterShape",
+              "Cylinder"
+            ]
+          },
+          "EmissionDirection": {
+            "t": "en",
+            "v": [
+              "NormalId",
+              "Top"
+            ]
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Durum aktif kaldığı sürece sürer; durum bitince DURDURULUR (sürekli efekt sızıntısı yok).",
+      "freq": "while_active"
+    },
+    {
+      "id": "world_quest_highlight",
+      "cat": "world",
+      "label": "Görev Vurgusu (Highlight)",
+      "ctx": [
+        "rpg",
+        "simulator",
+        "tycoon",
+        "casual",
+        "obby"
+      ],
+      "events": [
+        "spawn",
+        "quest_target",
+        "interactable"
+      ],
+      "targets": [
+        "part",
+        "item",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0,
+      "maxActive": 8,
+      "objects": [
+        "Highlight"
+      ],
+      "props": {
+        "Highlight": {
+          "FillColor": {
+            "t": "c3",
+            "v": [
+              255,
+              225,
+              120
+            ]
+          },
+          "FillTransparency": {
+            "t": "n",
+            "v": 0.75
+          },
+          "OutlineColor": {
+            "t": "c3",
+            "v": [
+              255,
+              235,
+              150
+            ]
+          },
+          "OutlineTransparency": {
+            "t": "n",
+            "v": 0.2
+          },
+          "DepthMode": {
+            "t": "en",
+            "v": [
+              "HighlightDepthMode",
+              "Occluded"
+            ]
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Süslü parçacık yerine ucuz vurgu: oyuncu hedefi bulur, performans düşmez. Hedef yoksa kapatılır.",
+      "freq": "while_active"
+    },
+    {
+      "id": "world_speed_trail",
+      "cat": "world",
+      "label": "Hız İzi (Trail)",
+      "ctx": [
+        "obby",
+        "parkour",
+        "racing",
+        "action"
+      ],
+      "events": [
+        "sprint",
+        "dash"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.4,
+      "maxActive": 4,
+      "objects": [
+        "Attachment",
+        "Trail"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Speed"
+          }
+        },
+        "Trail": {
+          "Name": {
+            "t": "s",
+            "v": "Hiz"
+          },
+          "Lifetime": {
+            "t": "n",
+            "v": 0.35
+          },
+          "MinLength": {
+            "t": "n",
+            "v": 0.4
+          },
+          "FaceCamera": {
+            "t": "b",
+            "v": false
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  150,
+                  220,
+                  255
+                ]
+              ],
+              [
+                1,
+                [
+                  90,
+                  140,
+                  255
+                ]
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.25
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "WidthScale": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                0.2
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.3
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Durum izi: koşarken görünür, durunca söner (koşula bağlı görünürlük).",
+      "freq": "while_active"
+    },
+    {
+      "id": "world_lightning_beam",
+      "cat": "world",
+      "label": "Yıldırım Hüzmesi (Beam)",
+      "ctx": [
+        "combat",
+        "rpg",
+        "action",
+        "pvp"
+      ],
+      "events": [
+        "cast",
+        "zap",
+        "hit"
+      ],
+      "targets": [
+        "npc",
+        "player",
+        "part"
+      ],
+      "authority": "client",
+      "cost": 2,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.3,
+      "cooldown": 0.35,
+      "maxActive": 6,
+      "objects": [
+        "Attachment",
+        "Beam",
+        "PointLight"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_BeamA"
+          }
+        },
+        "Beam": {
+          "Name": {
+            "t": "s",
+            "v": "Yildirim"
+          },
+          "CurveSize0": {
+            "t": "n",
+            "v": 1.2
+          },
+          "CurveSize1": {
+            "t": "n",
+            "v": -1.2
+          },
+          "Width0": {
+            "t": "n",
+            "v": 1.4
+          },
+          "Width1": {
+            "t": "n",
+            "v": 0.6
+          },
+          "Segments": {
+            "t": "n",
+            "v": 12
+          },
+          "Brightness": {
+            "t": "n",
+            "v": 2.5
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.9
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  190,
+                  220,
+                  255
+                ]
+              ],
+              [
+                1,
+                [
+                  120,
+                  170,
+                  255
+                ]
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243098098"
+          },
+          "TextureLength": {
+            "t": "n",
+            "v": 1
+          },
+          "TextureSpeed": {
+            "t": "n",
+            "v": 0.35
+          },
+          "TextureMode": {
+            "t": "en",
+            "v": [
+              "TextureMode",
+              "Wrap"
+            ]
+          },
+          "FaceCamera": {
+            "t": "b",
+            "v": true
+          }
+        },
+        "PointLight": {
+          "Color": {
+            "t": "c3",
+            "v": [
+              150,
+              200,
+              255
+            ]
+          },
+          "Brightness": {
+            "t": "n",
+            "v": 2.5
+          },
+          "Range": {
+            "t": "n",
+            "v": 14
+          },
+          "Shadows": {
+            "t": "b",
+            "v": false
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Beam, iki bağlantı noktası arasını tek nesneyle doldurur (parçacık yağmurundan ucuz ve net).",
+      "freq": "per_event"
+    },
+    {
+      "id": "world_footstep_puff",
+      "cat": "world",
+      "label": "Adım Tozu (kısıtlı tekrar)",
+      "ctx": [
+        "horror",
+        "survival",
+        "rpg",
+        "obby"
+      ],
+      "events": [
+        "step",
+        "footstep"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.4,
+      "cooldown": 0.35,
+      "maxActive": 4,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Step"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Adim"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243660364"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 0
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.25,
+              0.5
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              2,
+              5
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              45,
+              45
+            ]
+          },
+          "Acceleration": {
+            "t": "v3",
+            "v": [
+              0,
+              -6,
+              0
+            ]
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.35
+              ],
+              [
+                1,
+                0.9
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.5
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  200,
+                  195,
+                  185
+                ]
+              ],
+              [
+                1,
+                [
+                  170,
+                  165,
+                  155
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0
+          }
+        }
+      },
+      "burst": {
+        "times": {
+          "t": "n",
+          "v": 1
+        },
+        "count": {
+          "t": "n",
+          "v": 3
+        }
+      },
+      "cleanup": "delay",
+      "why": "Sık tetiklenen olay: cooldown + tek dalga ile sınırlanır; kalabalıkta otomatik seyreltilir (maks. aktif 4).",
+      "freq": "conditional"
+    },
+    {
+      "id": "world_vfx_combo_stage",
+      "cat": "world",
+      "label": "Büyü Aşamaları (şarj→fırlat→çarpma)",
+      "ctx": [
+        "rpg",
+        "combat",
+        "action"
+      ],
+      "events": [
+        "cast",
+        "channel",
+        "spell"
+      ],
+      "targets": [
+        "player",
+        "npc",
+        "part"
+      ],
+      "authority": "client",
+      "cost": 3,
+      "mobile": false,
+      "trig": "event",
+      "dur": 1.6,
+      "cooldown": 1.0,
+      "maxActive": 3,
+      "objects": [
+        "Attachment",
+        "ParticleEmitter",
+        "Beam"
+      ],
+      "props": {
+        "Attachment": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Combo"
+          }
+        },
+        "ParticleEmitter": {
+          "Name": {
+            "t": "s",
+            "v": "Enerji"
+          },
+          "Texture": {
+            "t": "s",
+            "v": "rbxassetid://243098098"
+          },
+          "Rate": {
+            "t": "n",
+            "v": 30
+          },
+          "Lifetime": {
+            "t": "nr",
+            "v": [
+              0.3,
+              0.7
+            ]
+          },
+          "Speed": {
+            "t": "nr",
+            "v": [
+              1,
+              4
+            ]
+          },
+          "SpreadAngle": {
+            "t": "v2",
+            "v": [
+              20,
+              20
+            ]
+          },
+          "Acceleration": {
+            "t": "v3",
+            "v": [
+              0,
+              10,
+              0
+            ]
+          },
+          "Size": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.2
+              ],
+              [
+                1,
+                0.7
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.3
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  200,
+                  170,
+                  255
+                ]
+              ],
+              [
+                1,
+                [
+                  120,
+                  90,
+                  255
+                ]
+              ]
+            ]
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 0.9
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0
+          }
+        },
+        "Beam": {
+          "Name": {
+            "t": "s",
+            "v": "Huzme"
+          },
+          "Width0": {
+            "t": "n",
+            "v": 2.2
+          },
+          "Width1": {
+            "t": "n",
+            "v": 1.2
+          },
+          "Segments": {
+            "t": "n",
+            "v": 10
+          },
+          "Brightness": {
+            "t": "n",
+            "v": 3
+          },
+          "LightEmission": {
+            "t": "n",
+            "v": 1
+          },
+          "LightInfluence": {
+            "t": "n",
+            "v": 0
+          },
+          "Color": {
+            "t": "seq",
+            "v": [
+              [
+                0,
+                [
+                  230,
+                  210,
+                  255
+                ]
+              ],
+              [
+                1,
+                [
+                  150,
+                  120,
+                  255
+                ]
+              ]
+            ]
+          },
+          "Transparency": {
+            "t": "nseq",
+            "v": [
+              [
+                0,
+                0.15
+              ],
+              [
+                0.7,
+                0.4
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "TextureLength": {
+            "t": "n",
+            "v": 1.5
+          },
+          "TextureSpeed": {
+            "t": "n",
+            "v": 0.6
+          },
+          "TextureMode": {
+            "t": "en",
+            "v": [
+              "TextureMode",
+              "Wrap"
+            ]
+          },
+          "FaceCamera": {
+            "t": "b",
+            "v": true
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Aşamalı saldırı: şarj (Rate>0) → fırlatma (Beam) → çarpma (world_hit_spark ile zincirlenir). Ağır sayılır, mobilde düşürülür.",
+      "freq": "per_event"
+    },
+    {
+      "id": "post_hit_flash",
+      "cat": "post",
+      "label": "Hasar Flaşı (ekran)",
+      "ctx": [
+        "combat",
+        "pvp",
+        "action",
+        "horror",
+        "survival"
+      ],
+      "events": [
+        "hit_taken",
+        "damage_taken"
+      ],
+      "targets": [
+        "player"
+      ],
+      "authority": "client",
+      "cost": 2,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.18,
+      "cooldown": 0.3,
+      "maxActive": 1,
+      "objects": [
+        "ColorCorrectionEffect",
+        "BlurEffect"
+      ],
+      "props": {
+        "ColorCorrectionEffect": {
+          "Name": {
+            "t": "s",
+            "v": "EI_HitFlash"
+          },
+          "TintColor": {
+            "t": "c3",
+            "v": [
+              255,
+              120,
+              110
+            ]
+          },
+          "Brightness": {
+            "t": "n",
+            "v": -0.05
+          },
+          "Contrast": {
+            "t": "n",
+            "v": 0.1
+          },
+          "Saturation": {
+            "t": "n",
+            "v": -0.25
+          },
+          "Enabled": {
+            "t": "b",
+            "v": true
+          }
+        },
+        "BlurEffect": {
+          "Name": {
+            "t": "s",
+            "v": "EI_HitBlur"
+          },
+          "Size": {
+            "t": "n",
+            "v": 6
+          },
+          "Enabled": {
+            "t": "b",
+            "v": true
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Ekran geri bildirimi oynanışı okutur; süre kısa (0.18 sn) ve cooldown'lu — baş döndürmez, mobilde de ucuz.",
+      "freq": "conditional"
+    },
+    {
+      "id": "post_low_health_state",
+      "cat": "post",
+      "label": "Düşük Can Durumu (vinyet)",
+      "ctx": [
+        "combat",
+        "pvp",
+        "action",
+        "survival",
+        "horror"
+      ],
+      "events": [
+        "low_health",
+        "danger_state"
+      ],
+      "targets": [
+        "player"
+      ],
+      "authority": "client",
+      "cost": 2,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.5,
+      "maxActive": 1,
+      "objects": [
+        "ColorCorrectionEffect",
+        "BlurEffect"
+      ],
+      "props": {
+        "ColorCorrectionEffect": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Low"
+          },
+          "TintColor": {
+            "t": "c3",
+            "v": [
+              255,
+              90,
+              90
+            ]
+          },
+          "Brightness": {
+            "t": "n",
+            "v": -0.1
+          },
+          "Contrast": {
+            "t": "n",
+            "v": 0.2
+          },
+          "Saturation": {
+            "t": "n",
+            "v": -0.4
+          },
+          "Enabled": {
+            "t": "b",
+            "v": true
+          }
+        },
+        "BlurEffect": {
+          "Name": {
+            "t": "s",
+            "v": "EI_LowBlur"
+          },
+          "Size": {
+            "t": "n",
+            "v": 3
+          },
+          "Enabled": {
+            "t": "b",
+            "v": true
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Durum göstergesi: can normale dönünce KAPATILIR (kalıcı karartma riski yok). Tek örnek (maxActive=1).",
+      "freq": "while_active"
+    },
+    {
+      "id": "post_mood_atmosphere",
+      "cat": "post",
+      "label": "Atmosfer / Ruh Hali",
+      "ctx": [
+        "horror",
+        "rpg",
+        "survival",
+        "roleplay"
+      ],
+      "events": [
+        "zone_enter",
+        "time_change",
+        "scene"
+      ],
+      "targets": [
+        "world"
+      ],
+      "authority": "server",
+      "cost": 3,
+      "mobile": false,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 1.0,
+      "maxActive": 1,
+      "objects": [
+        "Atmosphere",
+        "BloomEffect"
+      ],
+      "props": {
+        "Atmosphere": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Atmosphere"
+          },
+          "Density": {
+            "t": "n",
+            "v": 0.42
+          },
+          "Offset": {
+            "t": "n",
+            "v": 0.1
+          },
+          "Color": {
+            "t": "c3",
+            "v": [
+              120,
+              130,
+              150
+            ]
+          },
+          "Decay": {
+            "t": "c3",
+            "v": [
+              90,
+              100,
+              120
+            ]
+          },
+          "Glare": {
+            "t": "n",
+            "v": 0.15
+          },
+          "Haze": {
+            "t": "n",
+            "v": 1.4
+          }
+        },
+        "BloomEffect": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Bloom"
+          },
+          "Intensity": {
+            "t": "n",
+            "v": 0.7
+          },
+          "Size": {
+            "t": "n",
+            "v": 18
+          },
+          "Threshold": {
+            "t": "n",
+            "v": 1.1
+          },
+          "Enabled": {
+            "t": "b",
+            "v": true
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Ortak görünüm SUNUCUDA değişir (herkese aynı), oyuncuya özel karartma istemcide kalır — sorumluluk ayrımı.",
+      "freq": "while_active"
+    },
+    {
+      "id": "char_idle_breath",
+      "cat": "char",
+      "label": "Nefes (Idle)",
+      "ctx": [
+        "rpg",
+        "roleplay",
+        "simulator",
+        "casual",
+        "horror"
+      ],
+      "events": [
+        "idle",
+        "spawn"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.5,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Idle"
+            ]
+          }
+        }
+      },
+      "asset": "idle",
+      "slot": "movement",
+      "priority": "Idle",
+      "weight": 1.0,
+      "fadeIn": 0.3,
+      "fadeOut": 0.3,
+      "loop": true,
+      "stopLower": false,
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Idle katmanı Movement altındadır: yürüyüşü EZMEZ. Animasyon kimliği projeden gelir (uydurulmaz).",
+      "freq": "while_active"
+    },
+    {
+      "id": "char_walk_cycle",
+      "cat": "char",
+      "label": "Yürüyüş Çevrimi",
+      "ctx": [
+        "rpg",
+        "roleplay",
+        "simulator",
+        "obby",
+        "casual"
+      ],
+      "events": [
+        "walk",
+        "move"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.4,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Movement"
+            ]
+          }
+        }
+      },
+      "asset": "walk",
+      "slot": "movement",
+      "priority": "Movement",
+      "weight": 1.0,
+      "fadeIn": 0.2,
+      "fadeOut": 0.2,
+      "loop": true,
+      "stopLower": false,
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Movement katmanı: Idle'ı bastırır, Action'ı bastırmaz (öncelik düzeni).",
+      "freq": "while_active"
+    },
+    {
+      "id": "char_run_cycle",
+      "cat": "char",
+      "label": "Koşu Çevrimi",
+      "ctx": [
+        "obby",
+        "parkour",
+        "racing",
+        "combat",
+        "survival"
+      ],
+      "events": [
+        "sprint",
+        "run"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.4,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Movement"
+            ]
+          }
+        }
+      },
+      "asset": "run",
+      "slot": "movement",
+      "priority": "Movement",
+      "weight": 1.0,
+      "fadeIn": 0.15,
+      "fadeOut": 0.2,
+      "loop": true,
+      "stopLower": false,
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Aynı slota (movement) yazdığı için yürüyüşle ÇAKIŞMAZ: son çağrılan kazanır, eski iz söner.",
+      "freq": "while_active"
+    },
+    {
+      "id": "char_jump_launch",
+      "cat": "char",
+      "label": "Zıplama (hava)",
+      "ctx": [
+        "obby",
+        "parkour",
+        "combat",
+        "action",
+        "racing"
+      ],
+      "events": [
+        "jump",
+        "launch"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.5,
+      "cooldown": 0.2,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Action"
+            ]
+          }
+        }
+      },
+      "asset": "jump",
+      "slot": "action",
+      "priority": "Action",
+      "weight": 1.0,
+      "fadeIn": 0.1,
+      "fadeOut": 0.15,
+      "loop": false,
+      "stopLower": true,
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Action katmanı hareketi kısa süre EZER (stopLower) çünkü zıplama okutulmalı; sonra serbest bırakır.",
+      "freq": "per_event"
+    },
+    {
+      "id": "char_fall_loop",
+      "cat": "char",
+      "label": "Düşme (döngü)",
+      "ctx": [
+        "obby",
+        "parkour",
+        "action",
+        "racing"
+      ],
+      "events": [
+        "fall",
+        "airborne"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.3,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Movement"
+            ]
+          }
+        }
+      },
+      "asset": "fall",
+      "slot": "movement",
+      "priority": "Movement",
+      "weight": 0.9,
+      "fadeIn": 0.25,
+      "fadeOut": 0.2,
+      "loop": true,
+      "stopLower": false,
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Havada kaldığı sürece sürer; yere inince dur_Fall→land ile değişir (durum geçişi).",
+      "freq": "while_active"
+    },
+    {
+      "id": "char_land_recover",
+      "cat": "char",
+      "label": "İniş Toparlanma",
+      "ctx": [
+        "obby",
+        "parkour",
+        "combat",
+        "action"
+      ],
+      "events": [
+        "land",
+        "jump_land"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.45,
+      "cooldown": 0.25,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Action"
+            ]
+          }
+        }
+      },
+      "asset": "land",
+      "slot": "action",
+      "priority": "Action",
+      "weight": 1.0,
+      "fadeIn": 0.08,
+      "fadeOut": 0.2,
+      "loop": false,
+      "stopLower": true,
+      "burst": null,
+      "cleanup": "delay",
+      "why": "İniş anı kısa bir Action: bir sonraki hareket animasyonunu 0.2 sn içinde serbest bırakır.",
+      "freq": "per_event"
+    },
+    {
+      "id": "char_attack_combo",
+      "cat": "char",
+      "label": "Saldırı Kombosu",
+      "ctx": [
+        "combat",
+        "pvp",
+        "rpg",
+        "action"
+      ],
+      "events": [
+        "attack",
+        "tool_activate",
+        "swing"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 2,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.7,
+      "cooldown": 0.25,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Action2"
+            ]
+          }
+        }
+      },
+      "asset": "attack",
+      "slot": "action",
+      "priority": "Action2",
+      "weight": 1.0,
+      "fadeIn": 0.1,
+      "fadeOut": 0.15,
+      "loop": false,
+      "stopLower": true,
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Action2: aynı anda gelen zıplama/iniş (Action) ile ÇAKIŞMAZ ama hareketi kısa süre ezer; oyun mantığı sunucuda doğrulanır.",
+      "freq": "per_event"
+    },
+    {
+      "id": "char_hit_react",
+      "cat": "char",
+      "label": "Hasar Tepkisi (flinch)",
+      "ctx": [
+        "combat",
+        "pvp",
+        "rpg",
+        "action",
+        "survival"
+      ],
+      "events": [
+        "hit_taken",
+        "damage_taken",
+        "stagger"
+      ],
+      "targets": [
+        "player",
+        "npc"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.3,
+      "cooldown": 0.35,
+      "maxActive": 1,
+      "objects": [
+        "Animation"
+      ],
+      "props": {
+        "Animation": {
+          "AnimationId": {
+            "t": "s",
+            "v": ""
+          },
+          "Priority": {
+            "t": "en",
+            "v": [
+              "AnimationPriority",
+              "Action"
+            ]
+          }
+        }
+      },
+      "asset": "hit",
+      "slot": "action",
+      "priority": "Action",
+      "weight": 0.85,
+      "fadeIn": 0.05,
+      "fadeOut": 0.12,
+      "loop": false,
+      "stopLower": false,
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Ağırlık 0.85: yürüyüşü tamamen kesmez, üstüne biner (blending). Cooldown, üst üste hasarda spam engeller.",
+      "freq": "conditional"
+    },
+    {
+      "id": "char_npc_patrol",
+      "cat": "char",
+      "label": "NPC Devriye (prosedürel hareket)",
+      "ctx": [
+        "rpg",
+        "horror",
+        "survival",
+        "tycoon",
+        "roleplay"
+      ],
+      "events": [
+        "patrol",
+        "ai_move"
+      ],
+      "targets": [
+        "npc"
+      ],
+      "authority": "server",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": 4.0,
+      "cooldown": 0.5,
+      "maxActive": 6,
+      "objects": [
+        "Humanoid"
+      ],
+      "props": {
+        "Humanoid": {
+          "WalkSpeed": {
+            "t": "n",
+            "v": 8
+          },
+          "JumpPower": {
+            "t": "n",
+            "v": 40
+          }
+        }
+      },
+      "asset": null,
+      "slot": "movement",
+      "priority": null,
+      "weight": null,
+      "fadeIn": 0,
+      "fadeOut": 0,
+      "loop": true,
+      "stopLower": false,
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Animasyon kimliği GEREKMEZ: modeli yürüten oyun tarafı, görsel yürüyüş çevrimi (varsa) duruma bağlanır. Sunucu sahipliği.",
+      "freq": "interval"
+    },
+    {
+      "id": "char_camera_shake",
+      "cat": "cam",
+      "label": "Kamera Sarsıntısı",
+      "ctx": [
+        "combat",
+        "pvp",
+        "action",
+        "horror",
+        "racing"
+      ],
+      "events": [
+        "impact",
+        "hit",
+        "explosion_near"
+      ],
+      "targets": [
+        "player"
+      ],
+      "authority": "client",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.35,
+      "cooldown": 0.25,
+      "maxActive": 1,
+      "objects": [
+        "Camera"
+      ],
+      "props": {
+        "Camera": {
+          "FieldOfView": {
+            "t": "n",
+            "v": 74
+          },
+          "CameraType": {
+            "t": "en",
+            "v": [
+              "CameraType",
+              "Custom"
+            ]
+          }
+        }
+      },
+      "tween": {
+        "object": "Camera",
+        "prop": "FieldOfView",
+        "from": 74,
+        "to": 78,
+        "dur": 0.12,
+        "style": "Quad",
+        "dir": "Out",
+        "back": true
+      },
+      "burst": null,
+      "cleanup": "delay",
+      "why": "Kamera geri bildirimi darbenin ŞİDDETİNİ anlatır; kısa ve kapatılabilir (ayarlardan azaltılabilir).",
+      "freq": "conditional"
+    },
+    {
+      "id": "char_camera_focus",
+      "cat": "cam",
+      "label": "Kamera Odaklanma",
+      "ctx": [
+        "rpg",
+        "casual",
+        "roleplay",
+        "simulator",
+        "tycoon"
+      ],
+      "events": [
+        "interact",
+        "open_ui",
+        "inspect"
+      ],
+      "targets": [
+        "player",
+        "part"
+      ],
+      "authority": "client",
+      "cost": 2,
+      "mobile": true,
+      "trig": "event",
+      "dur": 1.0,
+      "cooldown": 0.6,
+      "maxActive": 1,
+      "objects": [
+        "Camera"
+      ],
+      "props": {
+        "Camera": {
+          "FieldOfView": {
+            "t": "n",
+            "v": 70
+          },
+          "CameraType": {
+            "t": "en",
+            "v": [
+              "CameraType",
+              "Scriptable"
+            ]
+          }
+        }
+      },
+      "tween": {
+        "object": "Camera",
+        "prop": "FieldOfView",
+        "from": 70,
+        "to": 55,
+        "dur": 0.5,
+        "style": "Quint",
+        "dir": "Out",
+        "back": true
+      },
+      "burst": null,
+      "cleanup": "delay",
+      "why": "İnceleme/etkileşimde dikkat çeker; Scriptable mod KISA tutulur (oyuncu kontrolü geri verilir).",
+      "freq": "per_event"
+    },
+    {
+      "id": "interact_proximity_prompt",
+      "cat": "interact",
+      "label": "ProximityPrompt (E ile aç)",
+      "ctx": [
+        "rpg",
+        "simulator",
+        "tycoon",
+        "horror",
+        "obby",
+        "casual"
+      ],
+      "events": [
+        "interactable",
+        "quest_target"
+      ],
+      "targets": [
+        "part",
+        "item",
+        "npc"
+      ],
+      "authority": "server",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.3,
+      "maxActive": 40,
+      "objects": [
+        "ProximityPrompt"
+      ],
+      "props": {
+        "ProximityPrompt": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Prompt"
+          },
+          "ActionText": {
+            "t": "s",
+            "v": "Aç"
+          },
+          "ObjectText": {
+            "t": "s",
+            "v": "Kutu"
+          },
+          "HoldDuration": {
+            "t": "n",
+            "v": 0.4
+          },
+          "MaxActivationDistance": {
+            "t": "n",
+            "v": 8
+          },
+          "RequiresLineOfSight": {
+            "t": "b",
+            "v": false
+          },
+          "KeyboardKeyCode": {
+            "t": "en",
+            "v": [
+              "KeyCode",
+              "E"
+            ]
+          },
+          "Enabled": {
+            "t": "b",
+            "v": true
+          },
+          "Style": {
+            "t": "en",
+            "v": [
+              "ProximityPromptStyle",
+              "Default"
+            ]
+          },
+          "UIOffset": {
+            "t": "v2",
+            "v": [
+              0,
+              20
+            ]
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Dünya etkileşimi: Prompt SUNUCUDA doğrulanır (Triggered), görsel açılış istemcide oynar. Mobilde otomatik dokunma düğmesi çıkar.",
+      "freq": "while_active"
+    },
+    {
+      "id": "interact_click_detector",
+      "cat": "interact",
+      "label": "ClickDetector (tıkla)",
+      "ctx": [
+        "simulator",
+        "tycoon",
+        "obby",
+        "casual",
+        "simulator"
+      ],
+      "events": [
+        "interactable",
+        "click"
+      ],
+      "targets": [
+        "part",
+        "item"
+      ],
+      "authority": "server",
+      "cost": 1,
+      "mobile": true,
+      "trig": "state",
+      "dur": -1,
+      "cooldown": 0.2,
+      "maxActive": 60,
+      "objects": [
+        "ClickDetector"
+      ],
+      "props": {
+        "ClickDetector": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Click"
+          },
+          "MaxActivationDistance": {
+            "t": "n",
+            "v": 12
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "En ucuz etkileşim: tıklama oyun mantığı SUNUCUDA (MouseClick), görsel tepki istemcide. Hover'da imleç değişir.",
+      "freq": "while_active"
+    },
+    {
+      "id": "interact_tool_activate",
+      "cat": "interact",
+      "label": "Tool Kullanımı",
+      "ctx": [
+        "combat",
+        "pvp",
+        "simulator",
+        "survival"
+      ],
+      "events": [
+        "tool_activate",
+        "equip"
+      ],
+      "targets": [
+        "tool"
+      ],
+      "authority": "server",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": -1,
+      "cooldown": 0.1,
+      "maxActive": 4,
+      "objects": [
+        "Tool"
+      ],
+      "props": {
+        "Tool": {
+          "ToolTip": {
+            "t": "s",
+            "v": "Kullan"
+          },
+          "CanBeDropped": {
+            "t": "b",
+            "v": false
+          },
+          "RequiresHandle": {
+            "t": "b",
+            "v": true
+          },
+          "Enabled": {
+            "t": "b",
+            "v": true
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Tool.Activated İSTEMCİDE tetiklenir; sonucu (hasar/ödül) SUNUCU doğrular. İstemci sadece görsel oynatır.",
+      "freq": "per_event"
+    },
+    {
+      "id": "interact_remote_event",
+      "cat": "interact",
+      "label": "İstemci↔Sunucu Kanalı (RemoteEvent)",
+      "ctx": [
+        "combat",
+        "pvp",
+        "rpg",
+        "simulator",
+        "tycoon",
+        "obby",
+        "horror",
+        "racing",
+        "survival",
+        "casual",
+        "roleplay"
+      ],
+      "events": [
+        "client_notify",
+        "server_confirm",
+        "custom"
+      ],
+      "targets": [
+        "player",
+        "world",
+        "part",
+        "npc"
+      ],
+      "authority": "server",
+      "cost": 1,
+      "mobile": true,
+      "trig": "event",
+      "dur": -1,
+      "cooldown": 0,
+      "maxActive": 200,
+      "objects": [
+        "RemoteEvent"
+      ],
+      "props": {
+        "RemoteEvent": {
+          "Name": {
+            "t": "s",
+            "v": "EI_Event"
+          }
+        }
+      },
+      "burst": null,
+      "cleanup": "stop",
+      "why": "Sözleşme: görsel efekt istemcide, OYUN SONUCU sunucuda. Saldırı görseli oynasa bile isabet sunucu onayıyla sayılır.",
+      "freq": "per_event"
+    },
+    {
+      "id": "reuse_ui_anim",
+      "cat": "decide",
+      "label": "Mevcut UI animasyonunu kullan",
+      "ctx": [
+        "*"
+      ],
+      "events": [
+        "ui_click",
+        "menu",
+        "ui_change",
+        "button",
+        "hud"
+      ],
+      "targets": [
+        "ui",
+        "player"
+      ],
+      "authority": "client",
+      "cost": 0,
+      "mobile": true,
+      "trig": "event",
+      "dur": 0.2,
+      "cooldown": 0,
+      "maxActive": 99,
+      "objects": [],
+      "props": {},
+      "burst": null,
+      "cleanup": "none",
+      "why": "Arayüz içi olaylarda YENİ dünya efekti eklenmez: mevcut GUI animasyon sistemi (EIAnim) yeterli ve daha ucuz.",
+      "freq": "per_event"
+    },
+    {
+      "id": "decide_none",
+      "cat": "decide",
+      "label": "Efekt yok (bilinçli karar)",
+      "ctx": [
+        "*"
+      ],
+      "events": [
+        "*"
+      ],
+      "targets": [
+        "*"
+      ],
+      "authority": "client",
+      "cost": 0,
+      "mobile": true,
+      "trig": "none",
+      "dur": 0,
+      "cooldown": 0,
+      "maxActive": 0,
+      "objects": [],
+      "props": {},
+      "burst": null,
+      "cleanup": "none",
+      "why": "Sık tetiklenen + önemsiz olaylarda, performans sınırındayken ya da görsel gürültü riskinde doğru cevap efekt EKLEMEMEKTİR.",
+      "freq": "none"
+    }
+  ]
+}

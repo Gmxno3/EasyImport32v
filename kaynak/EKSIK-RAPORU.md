@@ -20,3 +20,11 @@ Kapsam kararları: canlı senkron yok (JSON ile devam). Sunucu/yükleme mimarisi
 
 
 Not: Canlı veri (`{Coins}`, `_bind`) kullanıcı isteğiyle kaldırıldı.
+
+## v34 — dünya tarafı eklendi
+- ✅ EIVfx modülü: 32 preset (dünya 12 · karakter 9 · etkileşim 4 · post-process 3 · kamera 2 · karar 2),
+  Lua çalışma zamanı + JS karar aynası + API beyaz listeli üreteç.
+- ✅ Kapılar: `tests/verify_vfx.py` (55 kontrol) · `tests/verify_vfx_parity.py` (Lua ≡ JS, 4692 satır birebir).
+- ✅ Eklenti paketine gömüldü (8 modül, 454 KB); aktarım kapıları yeşil.
+- ⚠️ Hâlâ yok: Figma dünya etiketleri (`_3d`, `_tilt`, `_billboard`, `_surface`, `_prompt`, `_hold`), panelde VFX
+  arayüzü, gerçek Studio görsel doğrulaması, gerçek mobil ölçüm, resmî doküman teyidi, gerçek `AnimationId` varlıkları.
