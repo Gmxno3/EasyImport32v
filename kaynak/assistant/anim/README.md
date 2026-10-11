@@ -1,23 +1,31 @@
 # Animasyon Kütüphanesi — `anim-library.json`
 
-**108 animasyon**, 10 kategori, 174 tween track'i. Asistan'ın ikinci (ve son) işi: **animasyon ataması**.
+**129 animasyon kaydı**, 11 kategori, 213 tween track'i. Asistan'ın ikinci (ve son) işi: **animasyon ataması**.
+
+Üretime **116** kayıt giriyor (`tools/build_anim_lua.py`): kategori katlanması vardır —
+`fx` → `dongu`, `gecis` + `metin` → `giris`; `durum` (8) bilinçli olarak kapsam dışıdır ve
+5 kayıt boş kaldığı için (yalnız düşürülen özellikler vardı) dışarıda kalır. Katlanmadan sonra
+kategoriler: `giris` 40 · `dongu` 30 · `cikis` 14 · `hover` 12 · `basma` 11 · `dikkat` 8 · `secim` 1.
 
 ---
 
-## 1. Dağılım
+## 1. Dağılım (kaynak dosya)
 
 | Kategori | Adet | Tetikleyici | Ne zaman |
 |---|---|---|---|
-| `giris` | 18 | `show` | Öğe/GUI ekrana girerken |
-| `cikis` | 10 | `hide` | Ekrandan çıkarken (girişten **hızlı**) |
-| `hover` | 10 | `mouseEnter` / `mouseLeave` | Fare üzerine gelince |
-| `basma` | 10 | `click` / `mouseDown` | Tıklama geri bildirimi |
-| `dongu` | 13 | `always` | Sürekli çalışan ortam animasyonu |
+| `giris` | 28 | `show` | Öğe/GUI ekrana girerken |
+| `cikis` | 14 | `hide` | Ekrandan çıkarken (girişten **hızlı**) |
+| `hover` | 12 | `mouseEnter` / `mouseLeave` | Fare üzerine gelince |
+| `basma` | 11 | `click` / `mouseDown` | Tıklama geri bildirimi |
+| `dongu` | 16 | `always` | Sürekli çalışan ortam animasyonu |
 | `dikkat` | 10 | `event` | Uyarı, ödül, claim, hata |
-| `gecis` | 8 | `pageChange` | Ekran/sekme değişimi |
-| `durum` | 8 | `stateChange` | Toggle, kilit, ilerleme, başarı |
-| `fx` | 15 | `always` / `event` | **Figma'da EFEKT olarak kullanılan ImageLabel'lar** |
-| `metin` | 6 | `show` / `event` | Metne özel |
+| `gecis` | 8 | `pageChange` | Ekran/sekme değişimi (panellerde açılış havuzunda) |
+| `durum` | 8 | `stateChange` | Toggle, kilit, ilerleme, başarı (üretime alınmadı) |
+| `fx` | 15 | `always` / `event` | **Figma'da EFEKT olarak kullanılan ImageLabel'lar** (döngü yuvasına katlanır) |
+| `metin` | 6 | `show` / `event` | Metne özel (giriş yuvasına katlanır) |
+| `secim` | 1 | `click` | Seçim grubu (kalıcı `_select`) |
+
+v33'te eklenenler: **8 `panel_*`** giriş (soldan/sağdan/yukarıdan/aşağıdan yumuşak açılış, beliriş, katlanma, zoom, yavaş yükselme — `pool: extra`, varsayılan sıralamada değil ama seçenek listesinde ve panel açılış havuzunda) ve **4 `exit_*`** çıkış (sola/sağa kayarak, yumuşak sönerek, ölçekli sönerek).
 
 ---
 

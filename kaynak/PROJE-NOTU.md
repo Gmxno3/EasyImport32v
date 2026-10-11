@@ -154,3 +154,95 @@ Karakter (humanoid) animasyonu DEĞİLDİR. Kullanıcı animasyon adlarını gö
 - "Efekt resmi olarak ekle" yalnızca bir efekt uygulandıktan sonra etkin.
 - Eylem düğmeleri önizlemenin hemen altında.
 - Doğrulama: tarayıcı testi (gerçek önizleme, canlı animasyon, İçeri ekle). Eklenti PNG dışa aktarımı Figma'da henüz denenmedi.
+
+## v33 (GUI/UI animasyonları · "Süre" düzeltmesi · kendi resim envanteri)
+Kullanıcının üç isteği: (1) kendi resimlerimizi efekt yapalım + envanter bizim olsun ve Roblox aktarımında sıfırlansın,
+(2) paneldeki "Süre" ayarları çalışmıyor, (3) GUI/UI (buton dışı) animasyonlar yok — panel yumuşak/soldan sağa açılsın.
+
+- **GUI/UI animasyonları (madde 3):** Kütüphanedeki `cikis` (14), `gecis` (8), `metin` (6), `fx` (15) kategorileri üretime alındı.
+  Çalışma zamanı yuvaları: `cikis → hide`, `gecis/metin → giris` (giriş seçenekleri), `fx → dongu`; bu katlanan havuz
+  `pool = "extra"` olduğu için varsayılan sıralamaya girmez, yalnız seçenek listelerinde görünür.
+- **Panel açılışı:** `_open` hedefi ya da içinde `_close` olan öğe (code.js `markPanels` → `node.panel`) panel sayılır.
+  Açılış animasyonu yalnız `panel_*`/`page_*` havuzundan seçilir; varsayılan tercih **panel_slide_left_soft** (soldan sağa,
+  0.55 sn, sönerek — kullanıcının tarif ettiği "yumuşak, yavaş, soldan sağa"). Kapanışta **exit_slide_left**. Kullanıcı
+  panelden başka animasyon seçtiyse (öğrenme kaydı) tercih uygulanmaz — öğrenme kazanır.
+- **Çıkış animasyonu (yeni yuva `hide`):** JSON'da `düğüm.anim.hide` → Studio'da bağlama; `openPanel` görünür yapar ve
+  girişi oynatır, `closePanel` önce çıkış animasyonunu oynatır, **animasyonun süresi bitince** `Visible=false` yapar
+  (`task.delay`). Panel içindeki `hide` bağlamalı öğeler de çıkışta oynar. Kapanış beklerken yeniden açılırsa bekleyen
+  gizleme iptal edilir (sıra numarası). `play` artık en uzun izin süresini döndürür (kapanış beklemesi için).
+- **Eklenti:** panel öğelerine `EI_Panel` özniteliği yazılır (asistan yolunda da panel bayrağı gider); JSON'daki
+  `anim.hide` doğrudan bağlamaya eklenir.
+- **"Süre" düzeltmesi (madde 2):** Kök neden kütüphane kartındaki önizlemeydi: `playFx` ayarları yok sayıyordu
+  (sabit 220 ms yağmur, 10 parça patlama…), bu yüzden kaydırıcı oynatılınca hiçbir şey değişmiyordu ("deniyorum çalışmıyor").
+  Yeni `fxPreviewPlan(kind, params)` önizlemeyi Kaç tane / Süre (sn) / Görünürlük / En küçük-En büyük / Yayılma /
+  Süpürme-Bekleme-Bant-Eğim-Parlaklık / Döngü ayarlarına göre çizer; kaydırıcı değişince önizleme anında tazelenir.
+  JSON'a yazım (AS paneli ve kütüphane kartı "Uygula") zaten doğruydu; Lua/JS tarafında `seconds`/`count` çalışıyor.
+  Konfeti varsayılanları (`FX_DEFAULTS.confetti`) iki dile eklendi → parity 9 → 10 efekt.
+- **Envanter (madde 1):** Efekt resmi kullanan efektlerde (fall/confetti/burst/orbit/twinkle) "Envanter · kendi resimlerim"
+  bölümü: tasarımda dışa aktarılan PNG'ler tek tıkla efekte resim olur (ek Figma katmanı yok — kullanıcının istediği gibi
+  karmaşa çıkmaz). Ad, ZIP'teki dosya adıdır → Studio'da "İsimden eşleştir" doğrudan bağlar. Envanter **yeni Roblox
+  aktarımında (dışa aktarma) sıfırlanır**; ayrıca "Envanteri sıfırla" düğmesi vardır (yüklenen dosyalar da temizlenir).
+- **Ek düzeltmeler:** `resolveProp` — sınıfta olmayan özellik adları sessizce düşmez, sınıfın karşılığına çevrilir
+  (TextButton'da `ImageTransparency` → `BackgroundTransparency`); `u = "scale"` track'leri Position/Size'ı ölçekli taşır.
+- **Yeni kapılar:** `tests/verify_panel_anim.py` (panel yumuşak açılır, çıkış oynar ve süre bitince gizlenir, yarış iptali) ·
+  `tests/verify_panel_params.js` (Süre/Kaç tane önizleme planına geçer, envanter ve panel çıkış yuvası üründe var).
+  Parite fikstürüne panel öğesi + `cikis` kategorisi eklendi (Lua ≡ JS). Tüm Lua/JS kapıları geçti.
+- Bilinen: gerçek Roblox Studio'da ve gerçek Figma'da yine denenmedi; kod gerçek Figma/Studio yerine sahte ortamda koşuyor.
+
+### v33 ek (ekstra kütüphane yolu · kategori katlanması · seçilebilirlik)
+- **Ekstra Kütüphane yol hatası düzeltildi:** kütüphane repo kökünde (`kutuphane/`) duruyor, araçlar ise
+  `kaynak/kutuphane/` bekliyordu (geçici symlink ile çalışıyordu). Artık üç dosya kökü kendisi bulur:
+  `tests/verify_ekstra.js`, `assistant/tools/build_ekstra.py`, `assistant/tools/train_fx.py`
+  (sırayla `kaynak/..`, `kaynak`, `..` adaylarına bakar). Symlink olmadan `verify_ekstra.js` GEÇTİ (15 kontrol);
+  `train_fx.py` modeli bayt birebir yeniden üretir (deterministik).
+- **Kategori katlanması doğrulandı:** üreteç `fx`→`dongu` (15), `gecis`+`metin`→`giris` (14) katlar; `durum` (8)
+  üretime alınmaz, 5 kayıt boş kalır → çalışma zamanı 116 animasyon. Yani `fx` (efekt) animasyonları döngü
+  yuvasında, sayfa geçişleri ve metin animasyonları giriş yuvasında seçilebilir; kütüphane kutusunun kategori
+  listesi bu katlanmış hâldir. `ei-animlib-ui.js` başlığı ve `EIAnim.lua` "extra havuzu" yorumu buna göre düzeltildi.
+- **Kapı genişletildi:** `tests/verify_panel_params.js` 31 kontrol — kütüphanedeki 7 kategori de bir yuvaya bağlı,
+  116 animasyon listeleniyor, `panel_*`/`exit_*`/`fx_*`/`page_*`/`text_*` kayıtları doğru yuvalarda, panel açılışı
+  önerilen havuzda ve çıkış girişten hızlı (0.3 sn).
+- **Belgeler:** `anim/README.md` sayıları ve katlanma notu güncellendi; README kapı listesine yeni testler eklendi.
+
+### v33 ek 2 (Roblox aktarımı uçtan uca doğrulandı)
+- **Yeni kapı: `tests/verify_transfer_to_studio.py`** — "Figma → JSON → Studio eklentisi → LocalScript → sahte Roblox"
+  zinciri baştan sona koşar (54 kontrol):
+  1. Figma dışa aktarımı GERÇEK `code.js` ile yapılır (panel + `_open`/`_close` aksiyonları doğrulanır).
+  2. Figma panelinin JSON sözleşmesi kaynaktan denetlenir (`{src, cat, trig, tracks}` + yuva→anahtar eşlemesi).
+  3. Track'ler GERÇEK `ei-anim.js` (EIAnim.getAnim) üzerinden alınır — kopya veri yok.
+  4. Studio eklentisinin (`EasyImportStudioPlugin.lua`) JSON→bağlama kopyalaması (show/hide/hover/press/loop/selA/
+     delay/fx/params), `EI_Panel`, panels listesi, `buildSourceSpec(animBindings, doc.anims, …)` ve `fxImages` →
+     gizli şablon ImageLabel aktarımı statik olarak doğrulanır.
+  5. rbxmx gömülü modüllerle SENKRON ve yeni animasyonları içeriyor.
+  6. Üretilen LocalScript sahte Roblox'ta koşar: panel 0.55 sn Quint Out ile soldan açılır, çıkış 0.3 sn oynar,
+     `task.delay` sonrası gizlenir, geçiş (page_slide_left) ve metin (text_typewriter) girişleri oynar,
+     döngü animasyonu rep=-1 ile döner, yağmur aralığı = Süre ÷ Kaç tane (4÷8 = 0.5 sn),
+     parçalar ENVANTERDEKİ kendi resmimizden kopyalanır, Rectangle parlama ayarı (süpürme 2 sn) uygulanır.
+  7. **Tüm kütüphane:** 116 animasyonun 180 track'inin TAMAMI tween üretir (92 animasyon kendi öğesinde,
+     24'ü yalnız tutucu öğede: UIScale/UIStroke/UIGradient) — hiçbir animasyon aktarımda kaybolmuyor.
+  8. **Efektler:** Figma'daki 10 efekt ≡ çalışma zamanı varsayılanları ≡ Studio motorunun `startFx` dalları;
+     5 efekt (fall/confetti/burst/orbit/twinkle) envanter resmini kopyalar.
+- Belgeler: README kapı listesi ve `TEST-REHBERI-v33.md` (aktarım adımları dâhil) güncellendi.
+
+### v34 (dünya efekti · karakter animasyonu · etkileşim — MASTER PROMPT turu)
+- **Analiz:** tüm modül satırları ölçüldü; 19 Roblox sınıfı için depo tarandı → **dünya VFX, karakter animasyonu,
+  dünya etkileşimi tamamen yoktu** (kategori C). `Beam`/`Trail`/`Lighting` yalnız 2B GUI önizleme sınıf adıydı.
+- **Yeni bağımsız modül:** `assistant/vfx/vfx-library.json` (32 preset: world 12 · char 9 · interact 4 · post 3 ·
+  cam 2 · decide 2; 26 istemci / 6 sunucu) + `runtime/lua/EIVfx.lua` (502) + `runtime/js/ei-vfx.js` (3269) +
+  üreteç `assistant/tools/build_vfx_lua.py` (API beyaz listesi: 23 sınıf + 10 enum; uydurma → **durur**).
+- **Karar sözleşmesi:** `suggest` puanlı liste (daima `decide_none` ile biter; UI olayında `reuse_ui_anim`),
+  `plan` alternatifler + `skipped` (sebep: `butce`/`mobil`), `tryPlay` (`bekleme`/`es-zamanli`/`kapasite`),
+  `tick`/`release`, `limits` (masaüstü 3/60 · mobil 1/24), `animPlan`
+  (`ok · tekrar · oncelik · asset-eksik · char-degil · animasyon-degil` — kimlik yoksa oynatılmaz).
+- **Yetki ayrımı:** sunucu presetleri istemcide `yetki-sunucu`, istemci görselleri sunucuda `yetki-istemci` ile reddedilir;
+  RemoteEvent `ReplicatedStorage`'ta yeniden kullanılır.
+- **Yeni kapılar:** `tests/verify_vfx.py` (55 kontrol) ve `tests/verify_vfx_parity.py` (Lua ≡ JS, 4692 satır birebir).
+  Kapılar 5 gerçek hata buldu ve düzelttim: `TweenService` global sanılıyordu (servisten alınmalı), `animPlan` aynı
+  animasyonun yeniden tetiklenmesini de engelliyordu (`tekrar` eklendi), `repeat` alan adı Lua anahtar sözcüğüydü
+  (`freq` oldu; üreteç anahtar sözcükleri artık hata veriyor), `limits` iki dilde `0` bütçede farklıydı (sayı verilmişse
+  o kullanılır), boş `AnimationId` (projeden gelir) şemaca reddediliyordu.
+- **Paket:** `build_rbxmx.py` EIVfx'i de gömer → 8 modül, 454 KB; `studio-plugin/EasyImportStudioPlugin.rbxm` güncellendi
+  (md5 eşit). Aktarım ve Studio köprüsü kapıları yeşil kaldı.
+- **Rapor:** kök dizinde `Efekt-Animasyon-Sistemi-Raporu.md` (A/B/C/D sınıflandırması + D listesi: gerçek Studio
+  görseli, doküman teyidi, mobil FPS ölçümü, gerçek AnimationId'ler, panel arayüzü — hepsi **yapılmadı** olarak yazılı).
+

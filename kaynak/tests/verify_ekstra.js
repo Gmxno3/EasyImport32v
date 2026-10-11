@@ -13,8 +13,13 @@ load(ctx, 'ei-learn.js');
 load(ctx, 'ei-ekstra.js');
 load(ctx, 'ei-fxpick.js');
 const IDX = ctx.EKSTRA_INDEX, THUMBS = ctx.EKSTRA_THUMBS;
-const LIB = path.join(ROOT, 'kutuphane', 'EkstraKutuphane');
-const json = JSON.parse(fs.readFileSync(path.join(ROOT, 'kutuphane', 'ekstra-kutuphane.json'), 'utf8'));
+// Kütüphane kökü: kaynak ağacının içinde (kaynak/kutuphane) ya da repo kökünde (kaynak/../kutuphane)
+// olabilir. Yol sabit yazılmaz; bulunan ilk geçerli kök kullanılır.
+const LIB_CAND = [path.join(ROOT, '..', 'kutuphane'), path.join(ROOT, 'kutuphane')];
+const LIB_ROOT = LIB_CAND.filter((d) => fs.existsSync(path.join(d, 'ekstra-kutuphane.json')))[0];
+if (!LIB_ROOT) throw new Error('ekstra-kutuphane.json bulunamadı: ' + LIB_CAND.join(' · '));
+const LIB = path.join(LIB_ROOT, 'EkstraKutuphane');
+const json = JSON.parse(fs.readFileSync(path.join(LIB_ROOT, 'ekstra-kutuphane.json'), 'utf8'));
 
 let pass = 0;
 function ok(cond, msg) { assert.ok(cond, msg); pass++; console.log('  [OK] ' + msg); }

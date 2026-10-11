@@ -58,11 +58,13 @@ ELEMENTS = [
     (24, "Coin_fx_ImageLabel", "ImageLabel", 2, 21),
     (25, "Buton_smooth_button", "TextButton", 1, None),
     (26, "Yazi_gleam_TextLabel", "TextLabel", 1, None),
+    # v33: panel öğesi (code.js markPanels → node.panel) — panel havuzundan açılış + cikis (hide) bağlaması
+    (27, "Menu_panel", "Frame", 1, None, True),
 ]
 STYLES = ["stud", "anime", "cartoon", "belirsiz"]
 CLASSES = ["TextButton", "ImageButton", "Frame", "TextLabel", "ImageLabel"]
 ROLES = ["button", "close-button", "primary-button", "panel", "card", "label", "icon"]
-CATS = ["giris", "hover", "basma"]
+CATS = ["giris", "cikis", "hover", "basma"]
 RUNNER = r"""
 const fs = require('fs');
 const path = require('path');
@@ -90,12 +92,12 @@ for (const st of prog.styles) for (const lname of prog.learnNames) {
 for (const st of prog.styles) for (const lname of prog.learnNames) {
   const learn = lname === 'none' ? null : global.EILearn.decode(prog.learn[lname]);
   for (const pe of EIAnim.decideRanked(prog.elements, st, learn)) {
-    for (const cat of ['giris', 'hover', 'basma']) {
+    for (const cat of ['giris', 'cikis', 'hover', 'basma']) {
       if (pe.rank[cat]) out.push('DEC|' + [st, lname, pe.id, cat, pe.rank[cat].join(',')].join('|'));
     }
   }
   for (const b of EIAnim.decideBindings(prog.elements, st, learn)) {
-    out.push('CHO|' + [st, lname, b.id, b.show || '-', b.hover || '-', b.press || '-', b.loop || '-', b.selA || '-',
+    out.push('CHO|' + [st, lname, b.id, b.show || '-', b.hide || '-', b.hover || '-', b.press || '-', b.loop || '-', b.selA || '-',
       (b.sel === undefined ? '-' : String(b.sel)), (b.delay || 0).toFixed(3), b.fx || '-'].join('|'));
   }
 }
@@ -144,7 +146,7 @@ for _, st in ipairs(prog.styles) do
     local learn = nil
     if lname ~= "none" then learn = EILearn.decode(prog.learn[lname]) end
     for _, pe in ipairs(EIAnim.decideRanked(prog.elements, st, learn)) do
-      for _, cat in ipairs({ "giris", "hover", "basma" }) do
+      for _, cat in ipairs({ "giris", "cikis", "hover", "basma" }) do
         local l = pe.rank[cat]
         if l then
           emit("DEC|" .. st .. "|" .. lname .. "|" .. tostring(pe.id) .. "|" .. cat .. "|" .. table.concat(l, ","))
@@ -152,7 +154,7 @@ for _, st in ipairs(prog.styles) do
       end
     end
     for _, b in ipairs(EIAnim.decideBindings(prog.elements, st, learn)) do
-      emit(table.concat({ "CHO", st, lname, tostring(b.id), b.show or "-", b.hover or "-", b.press or "-",
+      emit(table.concat({ "CHO", st, lname, tostring(b.id), b.show or "-", b.hide or "-", b.hover or "-", b.press or "-",
         b.loop or "-", b.selA or "-", b.sel ~= nil and tostring(b.sel) or "-", string.format("%%.3f", b.delay or 0),
         b.fx or "-" }, "|"))
     end
@@ -276,7 +278,9 @@ def main():
         "styles": STYLES,
         "learnNames": learn_names,
         "learn": {"learned": learned_text(anims)},
-        "elements": [{"id": a, "name": b, "cls": c, "depth": d, "parent": pp} for a, b, c, d, pp in ELEMENTS],
+        "elements": [dict({"id": a, "name": b, "cls": c, "depth": d, "parent": pp},
+                          **({"panel": True} if len(e) > 0 and e[0] else {}))
+                     for a, b, c, d, pp, *e in ELEMENTS],
         "classes": CLASSES, "roles": ROLES, "cats": CATS,
     }
     lua_learn = open(LUA_LEARN, encoding="utf-8").read()
@@ -288,9 +292,10 @@ def main():
         + "learnNames = {" + ",".join(lua_str(s) for s in learn_names) + "}, "
         + "learn = { learned = " + lua_str(prog_json["learn"]["learned"]) + " }, "
         + "elements = {" + ",".join(
-            "{ id = %d, name = %s, cls = %s, depth = %d%s }" % (a, lua_str(b), lua_str(c), d,
-                                                                 "" if pp is None else ", parent = %d" % pp)
-            for a, b, c, d, pp in ELEMENTS) + "}, "
+            "{ id = %d, name = %s, cls = %s, depth = %d%s%s }" % (a, lua_str(b), lua_str(c), d,
+                                                                 "" if pp is None else ", parent = %d" % pp,
+                                                                 "" if not e or not e[0] else ", panel = true")
+            for a, b, c, d, pp, *e in ELEMENTS) + "}, "
         + "classes = {" + ",".join(lua_str(s) for s in CLASSES) + "}, "
         + "roles = {" + ",".join(lua_str(s) for s in ROLES) + "}, "
         + "cats = {" + ",".join(lua_str(s) for s in CATS) + "} }"
@@ -338,7 +343,7 @@ def main():
         for ln in lst:
             p = ln.split("|")
             if p[1] == style and p[2] == learn and p[3] == str(eid):
-                return {"show": p[4], "hover": p[5], "press": p[6]}
+                return {"show": p[4], "hide": p[5], "hover": p[6], "press": p[7]}
         return None
 
     def dec(lst, style, learn, eid, cat):
@@ -382,8 +387,8 @@ def main():
         for ln in lst:
             p = ln.split("|")
             if p[1] == style and p[2] == learn and p[3] == str(eid):
-                return {"show": p[4], "hover": p[5], "press": p[6], "loop": p[7], "selA": p[8], "sel": p[9], "delay": p[10],
-                        "fx": p[11] if len(p) > 11 else "-"}
+                return {"show": p[4], "hide": p[5], "hover": p[6], "press": p[7], "loop": p[8], "selA": p[9], "sel": p[10],
+                        "delay": p[11], "fx": p[12] if len(p) > 12 else "-"}
         return None
     for label, out in (("Lua", lua_out), ("JS", js_out)):
         c9 = chofull(out["CHO"], "anime", "none", 9)
@@ -401,7 +406,7 @@ def main():
         check(c14 and c14["loop"] != "-" and c5 and c5["loop"] in ("loop_wiggle_icon", "loop_rotate_slow"),
               "%s döngü: CTA (%s) yanıp söner, ikon (%s) sürekli sallanır" % (label, c14 and c14["loop"], c5 and c5["loop"]))
         loops = sum(1 for ln in out["CHO"] if ln.split("|")[1] == "anime" and ln.split("|")[2] == "none"
-                    and ln.split("|")[7] not in ("-", "loop_border_spin", "attention_bell_ring"))
+                    and ln.split("|")[8] not in ("-", "loop_border_spin", "attention_bell_ring"))
         check(loops <= 3, "%s döngü üst sınırı (otomatik): %d ≤ 3" % (label, loops))
         c16 = chofull(out["CHO"], "anime", "none", 16)
         check(c16 and c16["loop"] == "loop_border_spin", "%s kenarlık: adında 'border' geçen öğe kenarlık dönüşü alır (%s)" % (label, c16 and c16["loop"]))
@@ -456,7 +461,8 @@ def main():
         return out
     lua_def = _parse_defaults(lua_src, "local FX_DEFAULTS = {")
     js_def = _parse_defaults(js_src, "var FX_DEFAULTS = {")
-    check(lua_def and lua_def == js_def and len(lua_def) == 9,
+    # 10 efekt: fall, confetti, burst, orbit, twinkle, orb, smooth, gleam, shine, sweep (v33: confetti eklendi)
+    check(lua_def and lua_def == js_def and len(lua_def) == 10,
           "varsayılan efekt parametreleri Lua ≡ JS (%d efekt)" % len(lua_def))
 
     print()

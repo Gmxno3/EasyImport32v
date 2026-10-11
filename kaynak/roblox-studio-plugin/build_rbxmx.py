@@ -11,7 +11,7 @@ Bu betik .lua'yı tek doğruluk kaynağı kabul eder, .rbxmx'i ondan üretir.
 
 Ayrıca **asistan modüllerini** (`assistant/runtime/lua/*.lua`) .lua içindeki
 `-- <<EASYIMPORT_MODULES>>` işaretine gömer (A4b): EIRaw · EIStyle · EIFeatures_Spec · EIFeatures ·
-EIModel · EILearn. Geliştirme .lua'sında bu modüller YOKTUR; asistan yalnızca paketlenmiş
+EIModel · EILearn · EIAnim · EIVfx. Geliştirme .lua'sında bu modüller YOKTUR; asistan yalnızca paketlenmiş
 .rbxmx içinde çalışır (gömülü değilse `Assist` sessizce devre dışı kalır ve v9 davranışı korunur).
 Gömme deterministiktir: aynı modül baytları → aynı paket (zaman damgası yazılmaz, yalnız sha256).
 
@@ -42,6 +42,7 @@ MODULES = [
     ("EIModel", "EIModel.lua"),
     ("EILearn", "EILearn.lua"),
     ("EIAnim", "EIAnim.lua"),
+    ("EIVfx", "EIVfx.lua"),   # v34: dünya efekti · karakter animasyonu · etkileşim motoru
 ]
 
 HEADER = (
